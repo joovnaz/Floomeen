@@ -25,16 +25,16 @@ namespace Console
                 Content = string.Format(MessageTemplate, poco.Name, poco.Url)
             };
 
-            //var machine = Factory.Create("Floomine.Showroom.MessagingFloomine");
-            var machine = new MessagingFloomine();
+            //var machine = Factory.Create("Floomeen.Showroom.MessagingFloomeen");
+            var machine = new MessagingFloomeen();
 
             machine.InjectAdapter<SendgridAdapter>();
 
-            machine.AddContextData(MessagingFloomine.ContextKey.Message, message);
+            machine.AddContextData(MessagingFloomeen.ContextKey.Message, message);
 
-            //machine.AddContextData(MessagingFloomine.ContextKey.MaxRetries, new FlooInt(10));
+            //machine.AddContextData(MessagingFloomeen.ContextKey.MaxRetries, new FlooInt(10));
 
-            const string send = MessagingFloomine.Command.Send;
+            const string send = MessagingFloomeen.Command.Send;
 
             machine.Plug(poco);
 
@@ -66,7 +66,7 @@ namespace Console
             System.Console.ReadKey();
         }
 
-        private static void PrintAvailableCommands(MessagingFloomine machine)
+        private static void PrintAvailableCommands(MessagingFloomeen machine)
         {
             System.Console.WriteLine($"AvailableCommands '{string.Join(',', machine.AvailableCommands())}'");
 

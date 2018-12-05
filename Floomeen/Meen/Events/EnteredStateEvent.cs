@@ -1,17 +1,17 @@
 ﻿namespace Floomeen.Meen.Events
 {
-    public class EnteredStateEvent : MineEventBase
+    public class EnteredStateEvent : MeenEventBase
     {
         public string State { get; }
 
-        public EnteredStateEvent(MineBase floomine, object id, string state) : base(floomine, id)
+        public EnteredStateEvent(MeenBase floomeen, object id, string state) : base(floomeen, id)
         {
             State = state;
         }
 
         public override string ToString()
         {
-            return $"[EnterStateEvent] Floomine={Floomine.GetType().Name}, FellowId ={Id}, State={State}";
+            return $"[EnterStateEvent] Floomeen={Floomeen.GetType().Name}, FellowId ={Id}, State={State}";
         }
 
     }

@@ -2,7 +2,8 @@
 
 namespace Floomeen.Attributes
 {
-    public class FloomineMachine : Attribute
+    public class FloomeenMachine : Attribute
     {
+
     }
 }

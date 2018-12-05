@@ -6,7 +6,7 @@ namespace ConsoleWithConnectedMines
 {
     public class POCO : IFellow
     {
-        [FloomineId]
+        [FloomeenId]
         public string Id { get; set; }
 
         public string Name { get; set; }
@@ -15,16 +15,16 @@ namespace ConsoleWithConnectedMines
 
         public string Url { get; set; }
 
-        [FloomineState]
+        [FloomeenState]
         public string State { get; set; }
         
-        [FloomineMachine]
+        [FloomeenMachine]
         public string __FlooType { get; set; }
 
-        [FloomineChangedOn]
+        [FloomeenChangedOn]
         public DateTime __FlooUtcStateChangedOn { get; set; }
 
-        [FloomineStateData]
+        [FloomeenStateData]
         public string __FlooData { get; set; }
     }
 }

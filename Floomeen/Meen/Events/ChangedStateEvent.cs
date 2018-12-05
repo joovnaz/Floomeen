@@ -1,14 +1,14 @@
 ﻿namespace Floomeen.Meen.Events
 {
-    public class ChangedStateEvent : MineEventBase
+    public class ChangedStateEvent : MeenEventBase
     {
         public string FromState { get; }
 
         public string ToState { get; }
 
-        public ChangedStateEvent(MineBase floomine, object id, string fromState, string toState) :
+        public ChangedStateEvent(MeenBase floomeen, object id, string fromState, string toState) :
             
-            base(floomine, id)
+            base(floomeen, id)
         {
             FromState = fromState;
 
@@ -17,7 +17,7 @@
 
         public override string ToString()
         {
-            return $"[StateChangedEvent] Floomine={Floomine.GetType().Name}, FellowId ={Id}, From={FromState}, To={ToState}";
+            return $"[StateChangedEvent] Floomeen={Floomeen.GetType().Name}, FellowId ={Id}, From={FromState}, To={ToState}";
         }
     }
 }

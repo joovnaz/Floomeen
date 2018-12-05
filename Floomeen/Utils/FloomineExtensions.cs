@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Floomeen.Utils
 {
-    public static class FloomineExtensions
+    public static class FloomeenExtensions
     {
         public static string GetPropNameByAttribute<TAttribute>(object obj) where TAttribute : Attribute
         {

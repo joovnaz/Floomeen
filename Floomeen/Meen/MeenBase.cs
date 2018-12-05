@@ -12,11 +12,11 @@ using PubSub.Extension;
 
 namespace Floomeen.Meen
 {
-    public class MineBase
+    public class MeenBase
     {
         private readonly string _typename;
 
-        public Floo Floo { get; }
+        public Floo Flow { get; }
 
         public IFellow BoundFellow { get; private set; }
 
@@ -30,14 +30,14 @@ namespace Floomeen.Meen
 
         private string _executingCommand;
 
-        protected MineBase(string typename)
+        protected MeenBase(string typename)
         {
             _typename = string.IsNullOrEmpty(typename) ? GetType().FullName : typename;
 
-            Floo = new Floo(_typename);
+            Flow = new Floo(_typename);
         }
 
-        protected MineBase() : this(string.Empty)
+        protected MeenBase() : this(string.Empty)
         {
 
         }
@@ -53,7 +53,7 @@ namespace Floomeen.Meen
                 _adapters.Add(castedAdapter);
 
             }
-            else throw new FloomineException("InvalidAdapterType.IAdapterExpected");
+            else throw new FloomeenException("InvalidAdapterType.IAdapterExpected");
         }
 
         public void InjectAdapter<T>() where T : IAdapter
@@ -80,12 +80,12 @@ namespace Floomeen.Meen
 
         public void CheckIfWorkflowIsValid()
         {
-            Floo.CheckValidity();
+            Flow.CheckValidity();
         }
 
         public bool HasValidWorklow()
         {
-            return Floo.IsValid();
+            return Flow.IsValid();
         }
 
         #endregion
@@ -96,11 +96,11 @@ namespace Floomeen.Meen
         {
             MakeBindingFellowPreliminaryChecks(fellow);
 
-            fellow.SetPropValueByAttribute<FloomineMachine>(_typename);
+            fellow.SetPropValueByAttribute<FloomeenMachine>(_typename);
 
-            fellow.SetPropValueByAttribute<FloomineState>(Floo.StartState);
+            fellow.SetPropValueByAttribute<FloomeenState>(Flow.StartState);
 
-            fellow.SetPropValueByAttribute<FloomineChangedOn>(DateTime.UtcNow);
+            fellow.SetPropValueByAttribute<FloomeenChangedOn>(DateTime.UtcNow);
 
             BoundFellow = fellow;
         }
@@ -147,48 +147,48 @@ namespace Floomeen.Meen
 
         private void CheckIfBindingFellowHasMandatoryAttributes(IFellow fellow)
         {
-            var idPropName = fellow.GetPropNameByAttribute<FloomineId>();
+            var idPropName = fellow.GetPropNameByAttribute<FloomeenId>();
 
             if (string.IsNullOrEmpty(idPropName))
                 RaiseException($"MissingDefinitionOfIdAttribute");
 
-            var statePropName = fellow.GetPropNameByAttribute<FloomineState>();
+            var statePropName = fellow.GetPropNameByAttribute<FloomeenState>();
 
             if (string.IsNullOrEmpty(statePropName))
                 RaiseException($"MissingDefinitionOfStateAttribute");
 
-            var statePropType = fellow.GetPropTypeByAttribute<FloomineState>();
+            var statePropType = fellow.GetPropTypeByAttribute<FloomeenState>();
 
             if (!IsString(statePropType))
                 RaiseException($"FellowStatePropertyMustBeAString");
 
-            var machinePropName = fellow.GetPropNameByAttribute<FloomineMachine>();
+            var machinePropName = fellow.GetPropNameByAttribute<FloomeenMachine>();
 
             if (string.IsNullOrEmpty(machinePropName))
                 RaiseException($"MissingDefinitionOfMachineAttribute");
 
-            var machinePropType = fellow.GetPropTypeByAttribute<FloomineMachine>();
+            var machinePropType = fellow.GetPropTypeByAttribute<FloomeenMachine>();
 
             if (!IsString(machinePropType))
                 RaiseException($"FellowMachinePropertyMustBeAString");
 
 
-            var stateDataPropName = fellow.GetPropNameByAttribute<FloomineStateData>();
+            var stateDataPropName = fellow.GetPropNameByAttribute<FloomeenStateData>();
 
             if (string.IsNullOrEmpty(stateDataPropName))
                 RaiseException($"MissingDefinitionOfStateDataAttribute");
 
-            var stateDataPropType = fellow.GetPropTypeByAttribute<FloomineStateData>();
+            var stateDataPropType = fellow.GetPropTypeByAttribute<FloomeenStateData>();
 
             if (!IsString(stateDataPropType))
                 RaiseException($"FellowStateDataPropertyMustBeAString");
 
-            var changedOnPropName = fellow.GetPropNameByAttribute<FloomineChangedOn>();
+            var changedOnPropName = fellow.GetPropNameByAttribute<FloomeenChangedOn>();
 
             if (string.IsNullOrEmpty(changedOnPropName))
                 RaiseException($"MissingDefinitionOfChangedOnAttribute");
 
-            var changedOnPropType = fellow.GetPropTypeByAttribute<FloomineChangedOn>();
+            var changedOnPropType = fellow.GetPropTypeByAttribute<FloomeenChangedOn>();
 
             if (!IsDateTime(changedOnPropType))
                 RaiseException($"FellowChangedOnPropertyMustBeADateTime");
@@ -217,7 +217,7 @@ namespace Floomeen.Meen
 
             var state = BoundFellow.State();
 
-            return Floo.AvailableCommands(state).ToArray();
+            return Flow.AvailableCommands(state).ToArray();
         }
 
         private void CheckIfPluggingFellowIsSet(IFellow fellow)
@@ -269,9 +269,9 @@ namespace Floomeen.Meen
         {
             var fellowState = fellow.State();
 
-            if (Floo.FromStatesList.Contains(fellowState)) return;
+            if (Flow.FromStatesList.Contains(fellowState)) return;
 
-            if (Floo.ToStatesList.Contains(fellowState)) return;
+            if (Flow.ToStatesList.Contains(fellowState)) return;
 
             RaiseException($"WrongFellowState[{fellowState}]");
         }
@@ -307,7 +307,7 @@ namespace Floomeen.Meen
 
             var currentState = GetState();
 
-            var applicableRule = Floo.RetrieveRule(currentState, command);
+            var applicableRule = Flow.RetrieveRule(currentState, command);
 
             if (applicableRule == null) RaiseException($"UnsupportedCommand '{command}'");
 
@@ -365,7 +365,7 @@ namespace Floomeen.Meen
             RaiseEvent(new ExitedStateEvent(this, BoundFellow.Id(), state));
         }
 
-        private void RaiseEvent<TEvent>(TEvent @event) where TEvent : MineEventBase
+        private void RaiseEvent<TEvent>(TEvent @event) where TEvent : MeenEventBase
         {
             this.Publish(@event);
         }
@@ -379,7 +379,7 @@ namespace Floomeen.Meen
 
         private Setting RetrieveSetting(string state)
         {
-            return Floo.RetrieveSetting(state);
+            return Flow.RetrieveSetting(state);
         }
 
         public string GetState()
@@ -423,7 +423,7 @@ namespace Floomeen.Meen
 
         private void RaiseException(string message)
         {
-            throw new FloomineException($"[{_typename}] {message}");
+            throw new FloomeenException($"[{_typename}] {message}");
         }
 
     }

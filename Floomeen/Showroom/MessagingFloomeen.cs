@@ -5,7 +5,7 @@ using Floomeen.Meen;
 namespace Floomeen.Showroom
 {
 
-    public class MessagingFloomine : MineBase
+    public class MessagingFloomeen : MeenBase
     {
         public struct State
         {
@@ -32,25 +32,25 @@ namespace Floomeen.Showroom
 
         public static readonly string AdapterAcceptedType = SupportedTypes.Email;
 
-        public MessagingFloomine()
+        public MessagingFloomeen()
         {
-            Floo.AddSetting(State.Ready)
+            Flow.AddSetting(State.Ready)
                 .IsStartState()
                 .OnEnterEvent(ManageOnEnterEvent)
                 .OnExitEvent(ManageOnExitEvent);
 
-            Floo.AddSetting(State.Retrying)
+            Flow.AddSetting(State.Retrying)
                 .IsStartState()
                 .OnEnterEvent(ManageOnEnterEvent)
                 .OnExitEvent(ManageOnExitEvent);
             
-            Floo.AddSetting(State.Error)
+            Flow.AddSetting(State.Error)
                 .IsEndState();
 
-            Floo.AddSetting(State.Sent)
+            Flow.AddSetting(State.Sent)
                 .IsEndState();
 
-            Floo.AddTransition("SendingFlow")
+            Flow.AddTransition("SendingFlow")
                 .From(State.Ready)
                 .On(Command.Send)
                 .Do(SendEmail)
@@ -59,7 +59,7 @@ namespace Floomeen.Showroom
                     .Otherwise()
                         .GoTo(State.Retrying);
 
-            Floo.AddTransition("RetryingFlow")
+            Flow.AddTransition("RetryingFlow")
                 .From(State.Retrying)
                 .On(Command.Send)
                 .Do(SendEmail)

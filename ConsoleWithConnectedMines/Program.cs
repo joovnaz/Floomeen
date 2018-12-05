@@ -29,19 +29,19 @@ namespace ConsoleWithConnectedMines
         {
             foreach (var message in messages)
             {
-                BuildMessaging(out MessagingFloomine master, message);
+                BuildMessaging(out MessagingFloomeen master, message);
 
                 var listener = listeners.First(l => l.Id == message.Id + "-1");
 
-                BuildListener(out ListenerFloomine slave, listener);
+                BuildListener(out ListenerFloomeen slave, listener);
 
-                var coordinator = new MessagingListenerFloominesCoordinator(master, slave);
+                var coordinator = new MessagingListenerFloomeensCoordinator(master, slave);
 
                 // ----------------------------------------------------------------
 
                 Console.WriteLine($"Before {listener.Id} {slave.GetState()}");
 
-                master.Execute(MessagingFloomine.Command.Send);
+                master.Execute(MessagingFloomeen.Command.Send);
 
                 master.Unbind();
 
@@ -53,14 +53,14 @@ namespace ConsoleWithConnectedMines
 
         }
 
-        static void BuildListener(out ListenerFloomine listener, POCO poco)
+        static void BuildListener(out ListenerFloomeen listener, POCO poco)
         {
-            listener = new ListenerFloomine();
+            listener = new ListenerFloomeen();
 
             listener.Plug(poco);
         }
 
-        static void BuildMessaging(out MessagingFloomine floomine, POCO poco)
+        static void BuildMessaging(out MessagingFloomeen Floomeen, POCO poco)
         {
             var messageToSend = new FlooMessage
             {
@@ -71,16 +71,16 @@ namespace ConsoleWithConnectedMines
 
             var maxretries = new FlooInt(3);
 
-            //var machine = Factory.Create("Floomine.Showroom.MessagingFloomine");
-            floomine = new MessagingFloomine();
+            //var machine = Factory.Create("Floomeen.Showroom.MessagingFloomeen");
+            Floomeen = new MessagingFloomeen();
 
-            floomine.InjectAdapter<SendgridAdapter>();
+            Floomeen.InjectAdapter<SendgridAdapter>();
 
-            floomine.AddContextData(MessagingFloomine.ContextKey.Message, messageToSend);
+            Floomeen.AddContextData(MessagingFloomeen.ContextKey.Message, messageToSend);
 
-            floomine.AddContextData(MessagingFloomine.ContextKey.MaxRetries, maxretries);
+            Floomeen.AddContextData(MessagingFloomeen.ContextKey.MaxRetries, maxretries);
 
-            floomine.Plug(poco);
+            Floomeen.Plug(poco);
         }
     }
 }

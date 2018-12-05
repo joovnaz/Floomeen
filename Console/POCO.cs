@@ -6,7 +6,7 @@ namespace Console
 {
     public class POCO : IFellow
     {
-        [FloomineId]
+        [FloomeenId]
         public string Id { get; set; }
 
         public string Name { get; set; }
@@ -15,16 +15,16 @@ namespace Console
 
         public string Url { get; set; }
 
-        [FloomineState]
+        [FloomeenState]
         public string State { get; set; }
 
-        [FloomineMachine]
+        [FloomeenMachine]
         public string Machine { get; set; }
 
-        [FloomineChangedOn]
+        [FloomeenChangedOn]
         public DateTime UtChangedOn { get; set; }
 
-        [FloomineStateData]
+        [FloomeenStateData]
         public string StateData { get; set; }
     }
 }

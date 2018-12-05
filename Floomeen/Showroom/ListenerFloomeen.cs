@@ -3,11 +3,12 @@
 namespace Floomeen.Showroom
 {
 
-    public class ListenerFloomine : MineBase
+    public class ListenerFloomeen : MeenBase
     {
         public struct State
         {
             public const string Unchanged = "NotChangedState";
+
             public const string Changed = "ChangedState";
         }
 
@@ -16,12 +17,12 @@ namespace Floomeen.Showroom
             public const string Change = "ChangeStateCommand";
         }
 
-        public ListenerFloomine()
+        public ListenerFloomeen()
         {
 
-            Floo.AddSetting(State.Unchanged).IsStartState();
+            Flow.AddSetting(State.Unchanged).IsStartState();
 
-            Floo.AddTransition("ChangeStateTransition")
+            Flow.AddTransition("ChangeStateTransition")
                 .From(State.Unchanged)
                 .On(Command.Change)
                 .GoTo(State.Changed);

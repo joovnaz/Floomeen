@@ -6,21 +6,21 @@ namespace Floomeen.Tests
 {
     public class POCO : IFellow
     {
-        [FloomineId]
+        [FloomeenId]
         public string Id { get; set; }
 
         public string Username { get; set; }
 
-        [FloomineMachine]
+        [FloomeenMachine]
         public string FlooMachine { get; set; }
 
-        [FloomineState]
+        [FloomeenState]
         public string FlooState { get; set; }
 
-        [FloomineStateData]
+        [FloomeenStateData]
         public string FlooStateData { get; set; }
 
-        [FloomineChangedOn]
+        [FloomeenChangedOn]
         public DateTime FlooUtcChangedOn { get; set; }
 
     }

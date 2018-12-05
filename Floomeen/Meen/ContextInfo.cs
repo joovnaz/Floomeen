@@ -48,7 +48,7 @@ namespace Floomeen.Meen
         public TObject Get<TObject>(string key) where TObject : class
         {
             if (!_dictionary.ContainsKey(key))
-                throw new FloomineException($"MissingKey {key}");
+                throw new FloomeenException($"MissingKey {key}");
 
             return GetByKey<TObject>(key);
         }

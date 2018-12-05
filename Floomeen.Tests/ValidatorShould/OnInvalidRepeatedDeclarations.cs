@@ -37,7 +37,7 @@ namespace Floomeen.Tests.ValidatorShould
 
 
             //assert
-            Assert.Throws<FloomineException>(act);
+            Assert.Throws<FloomeenException>(act);
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Floomeen.Tests.ValidatorShould
 
 
             //assert
-            Assert.Throws<FloomineException>(act);
+            Assert.Throws<FloomeenException>(act);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Floomeen.Tests.ValidatorShould
             Action act = () => wf.CheckValidity();
 
             //assert
-            Assert.Throws<FloomineException>(act);
+            Assert.Throws<FloomeenException>(act);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace Floomeen.Tests.ValidatorShould
             Action act = () => wf.CheckValidity();
 
             //assert
-            Assert.Throws<FloomineException>(act);
+            Assert.Throws<FloomeenException>(act);
         }
 
     }

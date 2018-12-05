@@ -2,7 +2,7 @@
 
 namespace Floomeen.Meen
 {
-    public class Factory<TMachine> where TMachine : MineBase
+    public class Factory<TMachine> where TMachine : MeenBase
     {
         public static TMachine Create()
         {
@@ -16,11 +16,11 @@ namespace Floomeen.Meen
 
     public static class Factory
     {
-        public static MineBase Create(string typeName)
+        public static MeenBase Create(string typeName)
         {
             var machine = GetInstance(typeName);
 
-            var m = machine as MineBase;
+            var m = machine as MeenBase;
 
             m.CheckIfWorkflowIsValid();
 
@@ -39,7 +39,7 @@ namespace Floomeen.Meen
             Type t = Type.GetType(settingsType);
 
             if (t == null)
-                throw new Exception($"MissingFloomineClassType[{settingsType}]");
+                throw new Exception($"MissingFloomeenClassType[{settingsType}]");
 
             return Activator.CreateInstance(t);
         }

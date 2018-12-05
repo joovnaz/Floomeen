@@ -3,7 +3,7 @@ using Floomeen.Meen;
 
 namespace Floomeen.Showroom
 {
-    public class RadioFloomine : MineBase
+    public class RadioFloomeen : MeenBase
     {
         public struct State
         {
@@ -19,31 +19,31 @@ namespace Floomeen.Showroom
             public const string Pause = "Pause";
         }
 
-        public RadioFloomine(string typename) : base(typename)
+        public RadioFloomeen(string typename) : base(typename)
         {
-            Floo.AddTransition()
+            Flow.AddTransition()
                 .From(State.StandBy)
                 .OnEnter(OnEnterAction)
                 .OnExit(OnExitAction)
                 .On(Command.Play)
                     .GoTo(State.Playing);
 
-            Floo.AddTransition()
+            Flow.AddTransition()
                 .From(State.Playing)
                 .On(Command.Stop)
                 .ReturnTo(State.StandBy);
 
-            Floo.AddTransition()
+            Flow.AddTransition()
                 .From(State.Playing)
                 .OnEnter(OnEnterAction)
                 .On(Command.Pause)
                     .GoTo(State.Paused);
 
-            Floo.AddTransition()
+            Flow.AddTransition()
                 .From(State.Paused)
                     .On(Command.Stop).ReturnTo(State.StandBy);
 
-            Floo.AddTransition()
+            Flow.AddTransition()
                 .From(State.Paused)
                     .On(Command.Play).ReturnTo(State.Playing);
         }

@@ -63,7 +63,7 @@ namespace Floomeen.Flow
 
                 return true;
             }
-            catch (FloomineException)
+            catch (FloomeenException)
             {
                 return false;
             }

@@ -29,7 +29,7 @@ namespace Floomeen.Flow
 
         public IEvent IsStartState()
         {
-            if (AsEndElement) throw new FloomineException("ElementAlreadySet");
+            if (AsEndElement) throw new FloomeenException("ElementAlreadySet");
 
             AsStartElement = true;
 
@@ -38,7 +38,7 @@ namespace Floomeen.Flow
 
         public IEvent IsEndState()
         {
-            if (AsStartElement) throw new FloomineException("ElementAlreadySet");
+            if (AsStartElement) throw new FloomeenException("ElementAlreadySet");
 
             AsEndElement = true;
 

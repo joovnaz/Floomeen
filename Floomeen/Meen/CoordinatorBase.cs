@@ -5,31 +5,31 @@ using PubSub.Extension;
 
 namespace Floomeen.Meen
 {
-    public class CoordinatorBase<TMaster, TSlave> where TMaster : MineBase where TSlave : MineBase
+    public class CoordinatorBase<TMaster, TSlave> where TMaster : MeenBase where TSlave : MeenBase
     {
 
-        public TMaster MasterFloomine { get; }
+        public TMaster MasterFloomeen { get; }
 
-        public TSlave SlaveFloomine { get; }
+        public TSlave SlaveFloomeen { get; }
 
         public object MasterId { get; }
 
         protected CoordinatorBase(TMaster master, TSlave slave)
         {
             if (!master.IsBound)
-                throw new FloomineException("MasterFloomineIsNotBound");
+                throw new FloomeenException("MasterFloomeenIsNotBound");
 
             if (!slave.IsBound)
-                throw new FloomineException("SlaveFloomineIsNotBound");
+                throw new FloomeenException("SlaveFloomeenIsNotBound");
 
-            MasterFloomine = master;
+            MasterFloomeen = master;
 
-            SlaveFloomine = slave;
+            SlaveFloomeen = slave;
             
-            MasterId = MasterFloomine.CheckIfNotBoundAndGetId();
+            MasterId = MasterFloomeen.CheckIfNotBoundAndGetId();
         }
 
-        public void OnEvent<TEvent>(Func<TEvent, TMaster, TSlave, bool> handler) where TEvent : MineEventBase
+        public void OnEvent<TEvent>(Func<TEvent, TMaster, TSlave, bool> handler) where TEvent : MeenEventBase
         {
             this.Subscribe<TEvent>(@event =>
             {
@@ -37,16 +37,16 @@ namespace Floomeen.Meen
 
                 if (!IsRightForMe(@event)) return;
 
-                if (handler(@event, MasterFloomine, SlaveFloomine))
+                if (handler(@event, MasterFloomeen, SlaveFloomeen))
 
                     this.Unsubscribe<TEvent>();
 
             });
         }
 
-        private bool IsRightForMe(MineEventBase @event)
+        private bool IsRightForMe(MeenEventBase @event)
         {
-            return @event.Id.Equals(MasterId) && @event.Floomine.GetType() == MasterFloomine.GetType();
+            return @event.Id.Equals(MasterId) && @event.Floomeen.GetType() == MasterFloomeen.GetType();
         }
     }
 }

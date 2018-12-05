@@ -55,7 +55,7 @@ namespace Floomeen.Flow
         public IOn OnExit(Action<Context> onExit)
         {
             if (OnExitAction != null)
-                throw new FloomineException($"RepeatedOnExitDeclaration {Rulename}");
+                throw new FloomeenException($"RepeatedOnExitDeclaration {Rulename}");
 
             OnExitAction = onExit;
 
@@ -65,7 +65,7 @@ namespace Floomeen.Flow
         public IOn OnEnter(Action<Context> onEnter)
         {
             if (OnEnterAction != null)
-                throw new FloomineException($"RepeatedOnEnterDeclaration {Rulename}");
+                throw new FloomeenException($"RepeatedOnEnterDeclaration {Rulename}");
 
             OnEnterAction = onEnter;
 

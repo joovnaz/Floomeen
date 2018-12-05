@@ -2,7 +2,8 @@
 
 namespace Floomeen.Attributes
 {
-    public class FloomineState : Attribute
+    public class FloomeenState : Attribute
     {
+
     }
 }

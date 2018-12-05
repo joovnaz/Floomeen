@@ -2,7 +2,7 @@
 
 namespace Floomeen.Tests.FloomeenShould
 {
-    public class CustomerOrderFloomine : MineBase
+    public class CustomerOrderFloomeen : MeenBase
     {
         public struct State
         {
@@ -17,20 +17,20 @@ namespace Floomeen.Tests.FloomeenShould
             public const string Hand = "Hand";
         }
 
-        public CustomerOrderFloomine()
+        public CustomerOrderFloomeen()
         {
-            Floo.AddSetting(State.New)
+            Flow.AddSetting(State.New)
                 .IsStartState();
 
-            Floo.AddSetting(State.Delivered)
+            Flow.AddSetting(State.Delivered)
                 .IsEndState();
             
-            Floo.AddTransition("CargoTransition")
+            Flow.AddTransition("CargoTransition")
                 .From(State.New)
                 .On(Command.Cargo)
                 .GoTo(State.Shipping);
 
-            Floo.AddTransition("HandTransition")
+            Flow.AddTransition("HandTransition")
                 .From(State.Shipping)
                 .On(Command.Hand)
                 .GoTo(State.Delivered);

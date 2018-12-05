@@ -2,7 +2,7 @@
 
 namespace Floomeen.Tests.FloomeenShould
 {
-    public class TestingOnOffMachine : MineBase
+    public class TestingOnOffMachine : MeenBase
     {
         public struct State
         {
@@ -22,15 +22,15 @@ namespace Floomeen.Tests.FloomeenShould
         public TestingOnOffMachine()
         {
 
-            Floo.AddSetting(State.On)
+            Flow.AddSetting(State.On)
               .IsStartState();
 
-            Floo.AddTransition("SwitchOnTransition")
+            Flow.AddTransition("SwitchOnTransition")
                 .From(State.On)
                 .On(Command.SwitchOff)
                 .GoTo(State.Off);
 
-            Floo.AddTransition("SwitchOffTransition")
+            Flow.AddTransition("SwitchOffTransition")
                 .From(State.Off)
                 .On(Command.SwitchOn)
                 .GoTo(State.On);

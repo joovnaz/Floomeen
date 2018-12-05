@@ -23,7 +23,7 @@ namespace Floomeen.Tests.FloomeenShould
 
             Assert.Equal(0, string.Compare(
                             machine.GetMachine(), 
-                            "Floomine.Tests.FloomineShould.TestingOnOffMachine", 
+                            "Floomeen.Tests.FloomeenShould.TestingOnOffMachine", 
                             StringComparison.InvariantCultureIgnoreCase)                
             );
 

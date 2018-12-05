@@ -38,7 +38,7 @@ namespace Floomeen.Flow
 
                 return true;
             }
-            catch (FloomineException)
+            catch (FloomeenException)
             {
                 return false;
             }
@@ -151,7 +151,7 @@ namespace Floomeen.Flow
 
         private void RaiseException(string message)
         {
-            throw new FloomineException($"[{_typename}] {message}");
+            throw new FloomeenException($"[{_typename}] {message}");
         }
     }
 }

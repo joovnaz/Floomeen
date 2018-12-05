@@ -4,16 +4,16 @@ using Floomeen.Meen.Events;
 
 namespace Floomeen.Showroom
 {
-    public class MessagingListenerFloominesCoordinator : CoordinatorBase<MessagingFloomine, ListenerFloomine>
+    public class MessagingListenerFloomeensCoordinator : CoordinatorBase<MessagingFloomeen, ListenerFloomeen>
     {
-        public MessagingListenerFloominesCoordinator(MessagingFloomine m, ListenerFloomine s)  : base(m, s)
+        public MessagingListenerFloomeensCoordinator(MessagingFloomeen m, ListenerFloomeen s)  : base(m, s)
         {
             OnEvent<ChangedStateEvent>((@event, master, slave) => 
             {
 
                 if (!MachinesAreCompatible(master, slave)) return false;
 
-                slave.Execute(ListenerFloomine.Command.Change);
+                slave.Execute(ListenerFloomeen.Command.Change);
 
                 return true;
 
@@ -34,11 +34,11 @@ namespace Floomeen.Showroom
             });
         }
 
-        private static bool MachinesAreCompatible(MineBase master, MineBase slave)
+        private static bool MachinesAreCompatible(MeenBase master, MeenBase slave)
         {
             return 
-                   master.GetState() == MessagingFloomine.State.Retrying &&
-                   slave.GetState() == ListenerFloomine.State.Unchanged;
+                   master.GetState() == MessagingFloomeen.State.Retrying &&
+                   slave.GetState() == ListenerFloomeen.State.Unchanged;
         }
 
     }

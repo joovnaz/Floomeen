@@ -8,73 +8,73 @@ namespace Floomeen.Utils
     {
         public static string GetPropNameByAttribute<TAttribute>(this IFellow fellow) where TAttribute : Attribute
         {
-            return FloomineExtensions.GetPropNameByAttribute<TAttribute>(fellow);
+            return FloomeenExtensions.GetPropNameByAttribute<TAttribute>(fellow);
         }
 
         public static object GetPropValueByAttribute<TAttribute>(this IFellow fellow) where TAttribute : Attribute
         {
-            return FloomineExtensions.GetPropValueByAttribute<TAttribute>(fellow);
+            return FloomeenExtensions.GetPropValueByAttribute<TAttribute>(fellow);
         }
 
         public static Type GetPropTypeByAttribute<TAttribute>(this IFellow fellow) where TAttribute : Attribute
         {
-            return FloomineExtensions.GetPropTypeByAttribute<TAttribute>(fellow);
+            return FloomeenExtensions.GetPropTypeByAttribute<TAttribute>(fellow);
         }
 
         public static void SetPropValueByAttribute<TAttribute>(this IFellow fellow, object value) where TAttribute : Attribute
         {
-            FloomineExtensions.SetPropValueByAttribute<TAttribute>(fellow, value);
+            FloomeenExtensions.SetPropValueByAttribute<TAttribute>(fellow, value);
         }
 
 
         public static string Id(this IFellow fellow)
         {
-            return fellow.GetPropValueByAttribute<FloomineId>()?.ToString();
+            return fellow.GetPropValueByAttribute<FloomeenId>()?.ToString();
         }
 
         public static void Id(this IFellow fellow, object value)
         {
-            fellow.SetPropValueByAttribute<FloomineId>(value);
+            fellow.SetPropValueByAttribute<FloomeenId>(value);
         }
 
         public static string State(this IFellow fellow)
         {
-            return fellow.GetPropValueByAttribute<FloomineState>()?.ToString();
+            return fellow.GetPropValueByAttribute<FloomeenState>()?.ToString();
         }
 
         public static void State(this IFellow fellow, object value)
         {
-            fellow.SetPropValueByAttribute<FloomineState>(value);
+            fellow.SetPropValueByAttribute<FloomeenState>(value);
         }
 
         public static string Machine(this IFellow fellow)
         {
-            return fellow.GetPropValueByAttribute<FloomineMachine>()?.ToString();
+            return fellow.GetPropValueByAttribute<FloomeenMachine>()?.ToString();
         }
 
         public static void Machine(this IFellow fellow, object value)
         {
-            fellow.SetPropValueByAttribute<FloomineMachine>(value);
+            fellow.SetPropValueByAttribute<FloomeenMachine>(value);
         }
 
         public static string StateData(this IFellow fellow)
         {
-            return fellow.GetPropValueByAttribute<FloomineStateData>()?.ToString();
+            return fellow.GetPropValueByAttribute<FloomeenStateData>()?.ToString();
         }
 
         public static void StateData(this IFellow fellow, object value)
         {
-            fellow.SetPropValueByAttribute<FloomineStateData>(value);
+            fellow.SetPropValueByAttribute<FloomeenStateData>(value);
         }
 
         public static DateTime ChangedOn(this IFellow fellow)
         {
-            return (DateTime) fellow.GetPropValueByAttribute<FloomineChangedOn>();
+            return (DateTime) fellow.GetPropValueByAttribute<FloomeenChangedOn>();
         }
 
         public static void ChangedOn(this IFellow fellow, object value)
         {
-            fellow.SetPropValueByAttribute<FloomineChangedOn>(value);
+            fellow.SetPropValueByAttribute<FloomeenChangedOn>(value);
         }
 
     }

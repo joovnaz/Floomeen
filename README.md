@@ -4,11 +4,12 @@ Floomeen /fluːmɪ:n/ is a lightweight easy to use .Net Standard 2 class library
 
 ## Install
 
-Floomeen is available as Nuget package from Package Manager:
+From Nuget Package Manager:
 
 ``` 
 PM> Install-Package Floomeen 
 ``` 
+or from Nuget by searching for Floomeen.
 
 ## Definitions
 
