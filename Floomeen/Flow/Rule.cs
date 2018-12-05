@@ -19,9 +19,9 @@ namespace Floomeen.Flow
 
         public string FromState { get; private set; }
 
-        public Action<Context> OnEnterAction { get; private set; }
+        //public Action<Context> OnEnterAction { get; private set; }
 
-        public Action<Context> OnExitAction { get; private set; }
+        //public Action<Context> OnExitAction { get; private set; }
 
         public string OnCommand { get; private set; }
 
@@ -52,25 +52,25 @@ namespace Floomeen.Flow
             return this;
         }
 
-        public IOn OnExit(Action<Context> onExit)
-        {
-            if (OnExitAction != null)
-                throw new FloomeenException($"RepeatedOnExitDeclaration {Rulename}");
+        //public IOn OnExit(Action<Context> onExit)
+        //{
+        //    if (OnExitAction != null)
+        //        throw new FloomeenException($"RepeatedOnExitDeclaration {Rulename}");
 
-            OnExitAction = onExit;
+        //    OnExitAction = onExit;
 
-            return this;
-        }
+        //    return this;
+        //}
 
-        public IOn OnEnter(Action<Context> onEnter)
-        {
-            if (OnEnterAction != null)
-                throw new FloomeenException($"RepeatedOnEnterDeclaration {Rulename}");
+        //public IOn OnEnter(Action<Context> onEnter)
+        //{
+        //    if (OnEnterAction != null)
+        //        throw new FloomeenException($"RepeatedOnEnterDeclaration {Rulename}");
 
-            OnEnterAction = onEnter;
+        //    OnEnterAction = onEnter;
 
-            return this;
-        }
+        //    return this;
+        //}
 
         public IConditional Do(Func<Context, Result> action)
         {

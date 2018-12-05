@@ -56,10 +56,10 @@ namespace Floomeen.Flow
 
             foreach (var fromState in fromStates)
             {
-                if (_rulesList.Rules.Count(r => r.FromState == fromState && r.OnEnterAction != null) > 1)
+                if (_rulesList.Rules.Count(r => r.FromState == fromState) > 1)
                     RaiseException($"DoubleOnEnterActionDefinedFromState [{fromState}]");
 
-                if (_rulesList.Rules.Count(r => r.FromState == fromState && r.OnExitAction != null) > 1)
+                if (_rulesList.Rules.Count(r => r.FromState == fromState) > 1)
                     RaiseException($"DoubleOnExitActionDefinedFromState [{fromState}]");
 
             }

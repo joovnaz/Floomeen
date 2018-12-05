@@ -256,21 +256,17 @@ public class CustomerOrder : IFellow
 	[FloomeenState]
 	public string OrderStatus { get; set; }
 
-	[FloomeenMachine]
-	public string FloomeenMachine { get; set; }
    ...
 }
 
 ```
 
-The attributes `[FloomeenId]` and `[FloomeenState]` allow to map the customer order unique identifaction and its state with Floomine workflow.
-In our case are mapped to existing properties of the POCO class.
+The attributes `[FloomeenId]` and `[FloomeenState]` allow Floomine to map the customer order unique identifaction and its state during workflow.
+In our case, both are mapped to existing properties of the POCO class.
 
-A new property is introduced the `FloomeenMachine`. (---)
+The interface IFellow (a trivial empty interface) allows Floomeen to manage persistency by `IFellow` interface.
 
-The interface IFellow (simply an empty interface) allows Floomeen to associate its engine and manage persistency by `IFellow` interface.
-That it.
-Finally some setup code to allow Floomeen to plug the new born customer order:
+Finally, the `CustomerOrderFloomeen` is ready to start, with a setup process:
 
 ```
 
@@ -285,7 +281,11 @@ machine.Plug(customerOrder)
 
 ```
 
-The above code let Floomeen "plugging" an entity, i.e. forcing the state of new born entity to start state.
+The above code let Floomeen "plugging" a new entity, i.e. forcing the state of new entity to start state. Notice that an Id of new customer order is required BEFORE plugging operation.
+An empty or null `[FloomeenId]` attributed property (i.e. `CustomerOrderId` in our case) would raise an exception.
+Object unique identification is required by master-slave Floomeen configurations, where internal events are subscribed to align master and slave workflows. This is an advanced topic covered later.
+
+
 
 
 

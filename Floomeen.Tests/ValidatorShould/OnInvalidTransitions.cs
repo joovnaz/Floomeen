@@ -25,40 +25,6 @@ namespace Floomeen.Tests.ValidatorShould
         }
 
         [Fact]
-        public void ThrowExceptionWhenMissingEndStateButOnEnter()
-        {
-            //arrange
-            var wf = new Floo();
-
-            wf.AddTransition()
-                .From("OnState")
-                .OnEnter(FakeEnterExitCallback);
-
-            //act
-            Action act = () => wf.CheckValidity();
-
-            //assert
-            Assert.Throws<FloomeenException>(act);
-        }
-
-        [Fact]
-        public void ThrowExceptionWhenMissingEndStateButOnExit()
-        {
-            //arrange
-            var wf = new Floo();
-
-            wf.AddTransition()
-                .From("OnState")
-                .OnExit(FakeEnterExitCallback);
-
-            //act
-            Action act = () => wf.CheckValidity();
-
-            //assert
-            Assert.Throws<FloomeenException>(act);
-        }
-
-        [Fact]
         public void ThrowExceptionWhenMissingEndStateButOnSpecified()
         {
             //arrange

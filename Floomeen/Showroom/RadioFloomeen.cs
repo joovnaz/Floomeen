@@ -23,8 +23,8 @@ namespace Floomeen.Showroom
         {
             Flow.AddTransition()
                 .From(State.StandBy)
-                .OnEnter(OnEnterAction)
-                .OnExit(OnExitAction)
+                //.OnEnter(OnEnterAction)
+                //.OnExit(OnExitAction)
                 .On(Command.Play)
                     .GoTo(State.Playing);
 
@@ -35,7 +35,7 @@ namespace Floomeen.Showroom
 
             Flow.AddTransition()
                 .From(State.Playing)
-                .OnEnter(OnEnterAction)
+                //.OnEnter(OnEnterAction)
                 .On(Command.Pause)
                     .GoTo(State.Paused);
 

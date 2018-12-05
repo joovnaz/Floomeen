@@ -13,9 +13,9 @@ namespace ConsoleWithConnectedMines
 
         public static List<POCO> messages = new List<POCO>
         {
-            new POCO {Id = "1", Name = "P1", Email = "p1@p1.it"},
-            new POCO {Id = "2", Name = "P2", Email = "p2@p2.it"},
-            new POCO {Id = "3", Name = "P3", Email = "p3@p3.it"},
+            new POCO {Id = "1", Name = "P1", Email = "p1@p1.me"},
+            new POCO {Id = "2", Name = "P2", Email = "p2@p2.me"},
+            new POCO {Id = "3", Name = "P3", Email = "p3@p3.me"},
         };
 
         public static List<POCO> listeners = new List<POCO>

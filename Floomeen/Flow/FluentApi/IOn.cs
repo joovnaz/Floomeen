@@ -7,9 +7,9 @@ namespace Floomeen.Flow.FluentApi
     {
         IDo On(string command);
 
-        IOn OnExit(Action<Context> onExit);
+        //IOn OnExit(Action<Context> onExit);
 
-        IOn OnEnter(Action<Context> onEnter);
+        //IOn OnEnter(Action<Context> onEnter);
     }
 
 }
