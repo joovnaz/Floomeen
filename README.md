@@ -283,8 +283,14 @@ machine.Plug(customerOrder)
 
 The above code let Floomeen "plugging" a new entity, i.e. forcing the state of new entity to start state. Notice that an Id of new customer order is required BEFORE plugging operation.
 An empty or null `[FloomeenId]` attributed property (i.e. `CustomerOrderId` in our case) would raise an exception.
-Object unique identification is required by master-slave Floomeen configurations, where internal events are subscribed to align master and slave workflows. This is an advanced topic covered later.
+Object unique identification is required by master-slave Floomeen configurations, where internal events are subscribed to align master and slave workflows. 
+This is an advanced topic covered later.
 
+Floomeen can use the following further attributes to map useful FSM properties:
+
+* `[FloomineStateData]`
+* `[FloomineMachine]`
+* `[FloomineChangedOn]`
 
 
 
