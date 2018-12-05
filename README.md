@@ -236,7 +236,7 @@ public class CustomerOrderFloomeen : MeenBase {
 
 ### From POCO class to Fellow
 
-The POCO class used to store customer order data, now is ready to be used by Floomeen, by adding two attributes:
+Adding two attributes to the POCO class (used to store customer order data) allow Floomeen to map its internal state:
 
 ```
 public class CustomerOrder : IFellow
@@ -261,39 +261,73 @@ public class CustomerOrder : IFellow
 
 ```
 
-The attributes `[FloomeenId]` and `[FloomeenState]` allow Floomine to map the customer order unique identifaction and its state during workflow.
+The attributes `[FloomeenId]` and `[FloomeenState]` allow Floomine to map the customer order unique identifaction and its state during the entire workflow.
 In our case, both are mapped to existing properties of the POCO class.
 
 The interface IFellow (a trivial empty interface) allows Floomeen to manage persistency by `IFellow` interface.
 
-Finally, the `CustomerOrderFloomeen` is ready to start, with a setup process:
+Finally, the `CustomerOrderFloomeen` is ready to after a simple setup process:
 
 ```
+	...
 
-var customerOrder = new CustomerOrder { 
-		CustomerOrderId = "xxxx-xxxx" 
-		...
-};
+	var customerOrder = new CustomerOrder { 
+			CustomerOrderId = "xxxx-xxxx" 
+			...
+	};
 
-var machine = new CustomerOrderFloomeen();
+	var machine = new CustomerOrderFloomeen();
 
-machine.Plug(customerOrder)
+	machine.Plug(customerOrder)
 
+	...
 ```
 
-The above code let Floomeen "plugging" a new entity, i.e. forcing the state of new entity to start state. Notice that an Id of new customer order is required BEFORE plugging operation.
+The above code let Floomeen "plugging" a new customer order entity, by forcing the (empty) state of new entity to start state (`New` here). 
+Notice that an Id of new customer order is required BEFORE plugging operation.
 An empty or null `[FloomeenId]` attributed property (i.e. `CustomerOrderId` in our case) would raise an exception.
 Object unique identification is required by master-slave Floomeen configurations, where internal events are subscribed to align master and slave workflows. 
 This is an advanced topic covered later.
 
+### Further Floomine Attributes
+
 Floomeen can use the following further attributes to map useful FSM properties:
 
-* `[FloomineStateData]`
-* `[FloomineMachine]`
-* `[FloomineChangedOn]`
+* `[FloomineStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details);
+* `[FloomineMachine]`: map Floomine class type full name, to make sure that each entity is uniquely linked to a specific Floomine class type (e.g. "Mynamespace.Mymachines.CustomerOrderFloomine" );
+* `[FloomineChangedOn]`: map date and time of last state change (UTC);
+
+### Delivering Our First Order
+
+Now that our Floomine is running, we can send commands as by workflow, e.g.
+
+```
+	...
+
+	machine.Execute(Command.Cargo);
+
+	Console.WriteLine($"Customer Order {customerOrder.Id} is { machine.CurrentState }");
+
+	Console.WriteLine($"Available commands: {string.Join(",", machine.AvailableCommands() )}");
+	...
+```
+The above code would show the message `Customer Order xxxx-xxxx is Shipping`. Naturally sending a command not stated by Floomine workflow would raise an exception.
+At any time you can query the machine to obtain a list of available commands, in our case a second message shows `Available commands: Hand`, only a commands is in fact available.
 
 
 
+## The `CustomerOrderFloomeen` (v 2.0)
+
+Imagine to enhance our customer order workflow as follow:
+
+1. Start at New state;
+1. From New state, on receiving a Cargo command do the following:
+   - check if package is ready, if yes goto Shipping state otherwise goto Packaging state;
+
+1. From Shipping state, on receiving an Hand commad do the follwing:
+   - try to deliver the pacakage, if success goto Delivered, if less than 3 attempts remain on Shipping state, otherwise goto Undeliverable
+
+1. From Packaging state, on receiving a Packaged command goto Shipping
 
 
-
+....
