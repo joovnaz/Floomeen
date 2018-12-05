@@ -12,7 +12,7 @@ namespace Floomeen.Meen
 
         public TSlave SlaveFloomeen { get; }
 
-        public object MasterId { get; }
+        public object MasterBoundFellowId { get; }
 
         protected CoordinatorBase(TMaster master, TSlave slave)
         {
@@ -26,7 +26,7 @@ namespace Floomeen.Meen
 
             SlaveFloomeen = slave;
             
-            MasterId = MasterFloomeen.CheckIfNotBoundAndGetId();
+            MasterBoundFellowId = MasterFloomeen.BoundFellow.Id;
         }
 
         public void OnEvent<TEvent>(Func<TEvent, TMaster, TSlave, bool> handler) where TEvent : MeenEventBase
@@ -46,7 +46,7 @@ namespace Floomeen.Meen
 
         private bool IsRightForMe(MeenEventBase @event)
         {
-            return @event.Id.Equals(MasterId) && @event.Floomeen.GetType() == MasterFloomeen.GetType();
+            return @event.Id.Equals(MasterBoundFellowId) && @event.Floomeen.GetType() == MasterFloomeen.GetType();
         }
     }
 }

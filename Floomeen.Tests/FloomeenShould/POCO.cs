@@ -2,7 +2,7 @@
 using Floomeen.Attributes;
 using Floomeen.Meen.Interfaces;
 
-namespace Floomeen.Tests
+namespace Floomeen.Tests.FloomeenShould
 {
     public class POCO : IFellow
     {
@@ -11,17 +11,8 @@ namespace Floomeen.Tests
 
         public string Username { get; set; }
 
-        [FloomeenMachine]
-        public string FlooMachine { get; set; }
-
         [FloomeenState]
         public string FlooState { get; set; }
-
-        [FloomeenStateData]
-        public string FlooStateData { get; set; }
-
-        [FloomeenChangedOn]
-        public DateTime FlooUtcChangedOn { get; set; }
 
     }
 }

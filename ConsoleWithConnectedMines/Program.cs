@@ -39,13 +39,15 @@ namespace ConsoleWithConnectedMines
 
                 // ----------------------------------------------------------------
 
-                Console.WriteLine($"Before {listener.Id} {slave.GetState()}");
+                Console.WriteLine($"Before {listener.Id} {slave.CurrentState}");
+
+                master.Execute(MessagingFloomeen.Command.Send);
 
                 master.Execute(MessagingFloomeen.Command.Send);
 
                 master.Unbind();
 
-                Console.WriteLine($"After {listener.Id} {slave.GetState()}");
+                Console.WriteLine($"After {listener.Id} {slave.CurrentState}");
 
             }
 

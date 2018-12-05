@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Floomeen.Attributes;
+using Floomeen.Exceptions;
 using Floomeen.Meen.Interfaces;
 using Floomeen.Utils;
 
@@ -11,75 +12,197 @@ namespace Floomeen.Meen
     {
         private readonly IFellow _fellow;
 
-        public ContextInfo TempStateData = new ContextInfo();
+        private readonly string _machineTypename;
 
-        public Fellow(IFellow fellow)
+        public ContextInfo ContextStateData = new ContextInfo();
+
+        public bool SupportStateData = false;
+
+        public bool SupportMachine = false;
+
+        public bool SupportChangedOn = false;
+
+        public Fellow(IFellow fellow, string machineTypename)
         {
             _fellow = fellow;
+
+            _machineTypename = machineTypename;
 
             var stateData = _fellow.StateData();
 
             if (stateData != null)
-                TempStateData = ContextInfo.Deserialize(stateData);
+                ContextStateData = ContextInfo.Deserialize(stateData);
+
+            CheckAttributes();
         }
 
-        public void Initialize(string machineType, string state)
+        public void Plug(string machineType, string state)
         {
-            _fellow.SetPropValueByAttribute<FloomeenMachine>(machineType);
-
             _fellow.SetPropValueByAttribute<FloomeenState>(state);
 
-            _fellow.SetPropValueByAttribute<FloomeenChangedOn>(DateTime.UtcNow);
+            if (SupportMachine)
+                _fellow.SetPropValueByAttribute<FloomeenMachine>(machineType);
+            
+            if (SupportChangedOn)
+                _fellow.SetPropValueByAttribute<FloomeenChangedOn>(DateTime.UtcNow);
         }
 
-        public object Id()
+        #region Pseudo-Properties: Id, State, StateData, Machine, ChangedOn
+
+        public object Id
         {
-            return _fellow.Id();
+            get => _fellow.Id();
+
+            set => _fellow.Id(value);
         }
 
-        public string StateData()
+        public string State
         {
-            return _fellow.StateData();
+            get => _fellow.State();
+
+            set
+            {
+                _fellow.State(value);
+
+                if (SupportChangedOn)
+                    _fellow.ChangedOn(DateTime.UtcNow);
+            } 
         }
 
-        public void StateData(string stateData)
+        public string StateData
         {
-            _fellow.StateData(stateData);
+            get => _fellow.StateData();
+
+            set => _fellow.StateData(value);
         }
 
-        public void State(string state)
+        public string Machine
         {
-            _fellow.State(state);
+            get => _fellow.Machine();
+
+            set => _fellow.Machine(value);
+        }
+        
+        public DateTime ChangedOn
+        {
+            get => _fellow.ChangedOn();
+
+            set => _fellow.ChangedOn(value);
         }
 
-        public string State()
+        #endregion
+
+        public void SerializeContextStateData()
         {
-            return _fellow.State();
+            if (ContextStateData.IsEmpty()) return;
+
+            _fellow.StateData(ContextStateData.Serialize());
         }
 
-        public void Machine(string machine)
+        public void CheckAttributes()
         {
-            _fellow.Machine(machine);
+            // Id (mandatory)
+            var idPropName = _fellow.GetPropNameByAttribute<FloomeenId>();
+
+            if (string.IsNullOrEmpty(idPropName))
+                RaiseException($"MissingMandatoryAttribute(Id)");
+
+            var id = _fellow.Id();
+
+            if (id == null || string.IsNullOrEmpty(id.ToString()))
+                RaiseException("FellowIdPropertyIsNullOrEmpty");
+
+            // State (mandatory)
+            var statePropName = _fellow.GetPropNameByAttribute<FloomeenState>();
+
+            if (string.IsNullOrEmpty(statePropName))
+                RaiseException($"MissingMandatoryAttribute(State)");
+
+            var statePropType = _fellow.GetPropTypeByAttribute<FloomeenState>();
+            
+            if (!IsString(statePropType))
+                RaiseException($"FellowStatePropertyMustBeAString");
+            
+            // Machine (opt)
+            var machinePropName = _fellow.GetPropNameByAttribute<FloomeenMachine>();
+
+            SupportMachine = !string.IsNullOrEmpty(machinePropName);
+
+            if (SupportMachine)
+            {
+                var machinePropType = _fellow.GetPropTypeByAttribute<FloomeenMachine>();
+
+                if (!IsString(machinePropType))
+
+                    RaiseException($"FellowMachinePropertyMustBeAString");
+            }
+
+            // StateData (opt)
+            var stateDataPropName = _fellow.GetPropNameByAttribute<FloomeenStateData>();
+
+            SupportStateData = !string.IsNullOrEmpty(stateDataPropName);
+
+            if (SupportStateData)
+            {
+                var stateDataPropType = _fellow.GetPropTypeByAttribute<FloomeenStateData>();
+
+                if (!IsString(stateDataPropType))
+                    RaiseException($"FellowStateDataPropertyMustBeAString");
+            }
+
+            // ChangedOn (opt)
+            var changedOnPropName = _fellow.GetPropNameByAttribute<FloomeenChangedOn>();
+
+            SupportChangedOn = !string.IsNullOrEmpty(changedOnPropName);
+
+            if (SupportChangedOn)
+            {
+                var changedOnPropType = _fellow.GetPropTypeByAttribute<FloomeenChangedOn>();
+
+                if (!IsDateTime(changedOnPropType))
+                    RaiseException($"FellowChangedOnPropertyMustBeADateTime");
+
+            }
         }
 
-        public string Machine()
+        private void RaiseException(string message)
         {
-            return _fellow.Machine();
+            FloomeenException.Raise(_machineTypename, message);
         }
 
-        public void ChangedOn(DateTime changedOn)
+        private static bool IsDateTime(Type obj)
         {
-            _fellow.ChangedOn(changedOn);
+            return obj == typeof(DateTime);
         }
 
-        public DateTime ChangedOn()
+        private static bool IsString(Type obj)
         {
-            return _fellow.ChangedOn();
+            return obj == typeof(string);
         }
 
-        public void SerializeTempStateData()
+        public bool IsSet()
         {
-            _fellow.StateData(TempStateData.Serialize());
+            var state = _fellow.State();
+
+            var machine = _fellow.Machine();
+
+            return IsSet(state) || IsSet(machine);
+
         }
+
+        private bool IsSet(string value)
+        {
+            return !string.IsNullOrEmpty(value);
+        }
+
+        public void CheckMachineType()
+        {
+            var fellowType = _fellow.Machine();
+
+            if (fellowType != _machineTypename)
+
+                FloomeenException.Raise(_machineTypename, $"WrongFellowMachineType[{fellowType}]");
+        }
+
     }
 }

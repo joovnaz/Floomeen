@@ -16,23 +16,27 @@ namespace Floomeen.Meen
     {
         private readonly string _typename;
 
+        protected List<IAdapter> Adapters = new List<IAdapter>();
+
+        private readonly ContextInfo _contextData = new ContextInfo();
+
+        private string _executingCommand;
+
         public Floo Flow { get; }
 
         public Fellow BoundFellow { get; private set; }
 
         public bool IsBound => BoundFellow != null;
 
-        protected List<IAdapter> _adapters = new List<IAdapter>();
-
-        private readonly ContextInfo _contextData = new ContextInfo();
-
-        private string _executingCommand;
+        public string CurrentState => BoundFellow?.State;
 
         protected MeenBase(string typename)
         {
             _typename = string.IsNullOrEmpty(typename) ? GetType().FullName : typename;
 
             Flow = new Floo(_typename);
+
+            Flow.CheckValidity();
         }
 
         protected MeenBase() : this(string.Empty)
@@ -40,7 +44,7 @@ namespace Floomeen.Meen
 
         }
 
-        #region Configuration
+        #region Adapters
 
         public void InjectAdapter(string typeName)
         {
@@ -48,42 +52,23 @@ namespace Floomeen.Meen
 
             if (adapter is IAdapter castedAdapter)
             {
-                _adapters.Add(castedAdapter);
+                Adapters.Add(castedAdapter);
 
             }
-            else throw new FloomeenException("InvalidAdapterType.IAdapterExpected");
+
+            throw new FloomeenException("InvalidAdapterType.IAdapterExpected");
         }
 
         public void InjectAdapter<T>() where T : IAdapter
         {
             var adapter = Factory.GetInstance<T>();
 
-            _adapters.Add(adapter);
+            Adapters.Add(adapter);
         }
 
         protected TAdaper SelectAdapter<TAdaper>(string acceptedType) where TAdaper : IAdapter
         {
-            return (TAdaper)_adapters.FirstOrDefault(a => a.AcceptedTypes().Contains(acceptedType));
-
-        }
-
-        public void AddContextData<T>(string key, T data)
-        {
-            _contextData.Add(key, data);
-        }
-        
-        #endregion
-
-        #region Validation
-
-        public void CheckIfWorkflowIsValid()
-        {
-            Flow.CheckValidity();
-        }
-
-        public bool HasValidWorklow()
-        {
-            return Flow.IsValid();
+            return (TAdaper)Adapters.FirstOrDefault(a => a.AcceptedTypes().Contains(acceptedType));
         }
 
         #endregion
@@ -92,19 +77,30 @@ namespace Floomeen.Meen
 
         public void Plug(IFellow fellow)
         {
-            DoBindingFellowPreliminaryChecks(fellow);
+            if (IsBound)
+                FloomeenException.Raise(_typename, "AlreadyBound");
 
-            BoundFellow = new Fellow(fellow);
-            
-            BoundFellow.Initialize(_typename, Flow.StartState);
+            BoundFellow = new Fellow(fellow, _typename);
+
+            if (BoundFellow.IsSet())
+                FloomeenException.Raise(_typename, "CannotPlugFellowBecauseAlreadySet.TryBinding");
+
+            BoundFellow.Plug(_typename, Flow.StartState);
         }
 
-        private void CheckIfBindingFellowIdIsNotNullOrEmpty(IFellow fellow)
+        public void Bind(IFellow fellow)
         {
-            var id = fellow.Id();
+            if (IsBound)
+                FloomeenException.Raise(_typename, "AlreadyBound");
 
-            if (id == null || string.IsNullOrEmpty(id.ToString()))
-                RaiseException("BindingFellowIdCannotBeNullOrEmpty");
+            BoundFellow = new Fellow(fellow, _typename);
+
+            if (!BoundFellow.IsSet())
+                FloomeenException.Raise(_typename, "CannotBindFellowBecauseNotSet.TryPlugging");
+
+            BoundFellow.CheckMachineType();
+
+            Flow.CheckState(BoundFellow.State);
         }
 
         public void Unbind()
@@ -112,189 +108,22 @@ namespace Floomeen.Meen
             BoundFellow = null;
         }
 
-        private void DoBindingFellowPreliminaryChecks(IFellow fellow, bool isBinding = false)
-        {
-            CheckIfBound();
-
-            CheckIfWorkflowIsValid();
-
-            if (isBinding)
-                CheckIfBindingFellowIsAligned(fellow);
-            else
-                CheckIfPluggingFellowIsSet(fellow);
-
-            CheckIfBindingFellowHasMandatoryAttributes(fellow);
-
-            CheckIfBindingFellowIdIsNotNullOrEmpty(fellow);
-        }
-
-        public void Bind(IFellow fellow)
-        {
-            DoBindingFellowPreliminaryChecks(fellow, true);
-
-            BoundFellow = new Fellow(fellow);
-        }
-
-        private void CheckIfBindingFellowHasMandatoryAttributes(IFellow fellow)
-        {
-            var idPropName = fellow.GetPropNameByAttribute<FloomeenId>();
-
-            if (string.IsNullOrEmpty(idPropName))
-                RaiseException($"MissingDefinitionOfIdAttribute");
-
-            var statePropName = fellow.GetPropNameByAttribute<FloomeenState>();
-
-            if (string.IsNullOrEmpty(statePropName))
-                RaiseException($"MissingDefinitionOfStateAttribute");
-
-            var statePropType = fellow.GetPropTypeByAttribute<FloomeenState>();
-
-            if (!IsString(statePropType))
-                RaiseException($"FellowStatePropertyMustBeAString");
-
-            var machinePropName = fellow.GetPropNameByAttribute<FloomeenMachine>();
-
-            if (string.IsNullOrEmpty(machinePropName))
-                RaiseException($"MissingDefinitionOfMachineAttribute");
-
-            var machinePropType = fellow.GetPropTypeByAttribute<FloomeenMachine>();
-
-            if (!IsString(machinePropType))
-                RaiseException($"FellowMachinePropertyMustBeAString");
-
-            var stateDataPropName = fellow.GetPropNameByAttribute<FloomeenStateData>();
-
-            if (string.IsNullOrEmpty(stateDataPropName))
-                RaiseException($"MissingDefinitionOfStateDataAttribute");
-
-            var stateDataPropType = fellow.GetPropTypeByAttribute<FloomeenStateData>();
-
-            if (!IsString(stateDataPropType))
-                RaiseException($"FellowStateDataPropertyMustBeAString");
-
-            var changedOnPropName = fellow.GetPropNameByAttribute<FloomeenChangedOn>();
-
-            if (string.IsNullOrEmpty(changedOnPropName))
-                RaiseException($"MissingDefinitionOfChangedOnAttribute");
-
-            var changedOnPropType = fellow.GetPropTypeByAttribute<FloomeenChangedOn>();
-
-            if (!IsDateTime(changedOnPropType))
-                RaiseException($"FellowChangedOnPropertyMustBeADateTime");
-        }
-
-        private static bool IsDateTime(Type obj)
-        {
-            return obj == typeof(DateTime);
-        }
-
-        private static bool IsString(Type obj)
-        {
-            return obj == typeof(string);
-        }
-
-        public object CheckIfNotBoundAndGetId()
-        {
-            CheckIfNotBound();
-
-            return BoundFellow.Id();
-        }
-
         public string[] AvailableCommands()
         {
-            CheckIfNotBound();
-
-            var state = BoundFellow.State();
+            var state = BoundFellow.State;
 
             return Flow.AvailableCommands(state).ToArray();
         }
 
-        private void CheckIfPluggingFellowIsSet(IFellow fellow)
-        {
-            var state = fellow.State();
-
-            var machine = fellow.Machine();
-
-            if (IsSet(state) || IsSet(machine))
-
-                RaiseException("CannotBindBecauseFellowIsSet");
-        }
-
-        private bool IsSet(string value)
-        {
-            return !string.IsNullOrEmpty(value);
-        }
-
-
-        private void CheckIfBound()
-        {
-            if (IsBound)
-                RaiseException("AlreadyBind");
-        }
-
-        private void CheckIfNotBound()
-        {
-            if (!IsBound)
-                RaiseException("NotBound");
-        }
-
-        private void CheckIfBindingFellowIsAligned(IFellow fellow)
-        {
-            CheckBindingFellowMachineType(fellow);
-
-            CheckBindingFellowState(fellow);
-        }
-
-        private void CheckBindingFellowMachineType(IFellow fellow)
-        {
-            var fellowType = fellow.Machine();
-
-            if (fellowType != GetType().FullName)
-
-                RaiseException($"WrongFellowMachineType[{fellowType}]");
-        }
-
-        private void CheckBindingFellowState(IFellow fellow)
-        {
-            var fellowState = fellow.State();
-
-            if (Flow.FromStatesList.Contains(fellowState)) return;
-
-            if (Flow.ToStatesList.Contains(fellowState)) return;
-
-            RaiseException($"WrongFellowState[{fellowState}]");
-        }
-
         #endregion
 
-        #region State
-
-
-        private Context CreateContext()
-        {
-            var currentState = GetState();
-
-            var context = new Context
-            {
-                State = currentState,
-
-                StateData = BoundFellow.TempStateData,
-
-                Command = _executingCommand,
-
-                Fellow = BoundFellow,
-
-                Data = _contextData
-            };
-
-            return context;
-        }
+        #region Engine
 
         public void Execute(string command)
         {
             _executingCommand = command;
 
-            var fromState = GetState();
+            var fromState = BoundFellow.State;
 
             var rule = Flow.RetrieveApplicableRule(fromState, _executingCommand);
 
@@ -331,11 +160,9 @@ namespace Floomeen.Meen
 
         private void SwapState(string fromState, string toState)
         {
-            BoundFellow.SerializeTempStateData();
+            BoundFellow.SerializeContextStateData();
 
-            BoundFellow.ChangedOn(DateTime.UtcNow);
-
-            BoundFellow.State(toState);
+            BoundFellow.State = toState;
 
             if (toState == fromState) return;
             
@@ -343,14 +170,14 @@ namespace Floomeen.Meen
             
             EnterNewState(toState, CreateContext());
 
-            RaiseEvent(new ChangedStateEvent(this, BoundFellow.Id(), fromState, toState));
+            RaiseEvent(new ChangedStateEvent(this, BoundFellow.Id, fromState, toState));
         }
 
         private void ExitCurrentState(string state, Context context)
         {
-            RetrieveSetting(state)?.OnExitEventHandler?.Invoke(context);
+            Flow.RetrieveSetting(state)?.OnExitEventHandler?.Invoke(context);
 
-            RaiseEvent(new ExitedStateEvent(this, BoundFellow.Id(), state));
+            RaiseEvent(new ExitedStateEvent(this, BoundFellow.Id, state));
         }
 
         private void RaiseEvent<TEvent>(TEvent @event) where TEvent : MeenEventBase
@@ -360,59 +187,36 @@ namespace Floomeen.Meen
 
         private void EnterNewState(string state, Context context)
         {
-            RetrieveSetting(state)?.OnEnterEventHandler?.Invoke(context);
+            Flow.RetrieveSetting(state)?.OnEnterEventHandler?.Invoke(context);
 
-            RaiseEvent(new EnteredStateEvent(this, BoundFellow.Id(), state));
-        }
-
-        private Setting RetrieveSetting(string state)
-        {
-            return Flow.RetrieveSetting(state);
-        }
-
-        public string GetState()
-        {
-            CheckIfNotBound();
-
-            var state = BoundFellow.State();
-
-            return state;
-        }
-
-        public string GetStateData()
-        {
-            CheckIfNotBound();
-
-            var stateData = BoundFellow.StateData();
-
-            return stateData;
-
-        }
-
-        public string GetMachine()
-        {
-            CheckIfNotBound();
-
-            var machine = BoundFellow.Machine();
-
-            return machine;
-        }
-
-        public DateTime GetChangeOn()
-        {
-            CheckIfNotBound();
-
-            var changedOn = BoundFellow.ChangedOn();
-
-            return changedOn;
+            RaiseEvent(new EnteredStateEvent(this, BoundFellow.Id, state));
         }
 
         #endregion
+        
+        #region Context
 
-        private void RaiseException(string message)
+        private Context CreateContext()
         {
-            throw new FloomeenException($"[{_typename}] {message}");
+            return new Context
+            {
+                Data = _contextData,
+
+                State = BoundFellow.State,
+
+                Command = _executingCommand,
+
+                Fellow = BoundFellow,
+
+                StateData = BoundFellow.ContextStateData,
+            };
         }
 
+        public void AddContextData<T>(string key, T data)
+        {
+            _contextData.Add(key, data);
+        }
+
+        #endregion
     }
 }

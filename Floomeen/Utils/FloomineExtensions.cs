@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Floomeen.Exceptions;
 
 namespace Floomeen.Utils
 {
@@ -41,6 +42,10 @@ namespace Floomeen.Utils
         public static void SetPropValueByAttribute<TAttribute>(object obj, object value) where TAttribute : Attribute
         {
             var propertyName = GetPropNameByAttribute<TAttribute>(obj);
+
+            if (string.IsNullOrEmpty(propertyName))
+
+                throw new FloomeenException($"UnsupportedPseudoProperty.MissingAttribute{typeof(TAttribute).FullName}");
 
             obj.GetType().GetProperty(propertyName)?.SetValue(obj, value, null);
         }

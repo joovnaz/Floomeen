@@ -19,23 +19,21 @@ namespace Floomeen.Tests.FloomeenShould
             machine.Plug(fellow); // impose OnState
 
             //assert
-            Assert.Equal(machine.GetState(), TestingOnOffMachine.State.On);
+            Assert.Equal(machine.CurrentState, TestingOnOffMachine.State.On);
 
-            Assert.Equal(0, string.Compare(
-                            machine.GetMachine(), 
-                            "Floomeen.Tests.FloomeenShould.TestingOnOffMachine", 
-                            StringComparison.InvariantCultureIgnoreCase)                
-            );
+            if (machine.BoundFellow.SupportMachine)
 
-            Assert.True(string.IsNullOrEmpty(machine.GetStateData()));
+                Assert.True(string.IsNullOrEmpty(machine.BoundFellow.StateData));
 
-            Assert.True(machine.GetChangeOn().Year == DateTime.Now.Year);
+            if (machine.BoundFellow.SupportChangedOn)
+
+                Assert.True(machine.BoundFellow.ChangedOn.Year == DateTime.Now.Year);
 
             //act
             machine.Execute(TestingOnOffMachine.Command.SwitchOff);
 
             //assert
-            Assert.Equal(machine.GetState(), TestingOnOffMachine.State.Off);
+            Assert.Equal(machine.CurrentState, TestingOnOffMachine.State.Off);
         }
     }
 }

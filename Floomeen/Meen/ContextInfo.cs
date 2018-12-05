@@ -64,8 +64,7 @@ namespace Floomeen.Meen
 
             return true;
         }
-
-
+        
         public void Save<TObject>(string key, TObject value) where TObject : class
         {
             _dictionary[key] = value;
@@ -81,6 +80,11 @@ namespace Floomeen.Meen
             var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(serialized);
 
             return new ContextInfo(dictionary);
+        }
+
+        public bool IsEmpty()
+        {
+            return _dictionary.Count == 0;
         }
     }
 }

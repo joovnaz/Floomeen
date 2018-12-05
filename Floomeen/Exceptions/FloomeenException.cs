@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Floomeen.Exceptions
 {
@@ -7,6 +8,11 @@ namespace Floomeen.Exceptions
         public FloomeenException(string message) : base(message)
         {
             
+        }
+
+        public static void Raise(string machineTypename, string message)
+        {
+            throw new FloomeenException($"[{machineTypename}] {message}");
         }
     }
 }

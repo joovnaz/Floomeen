@@ -8,8 +8,6 @@ namespace Floomeen.Meen
         {
             var m = Factory.GetInstance<TMachine>();
 
-            m.CheckIfWorkflowIsValid();
-
             return m;
         }
     }
@@ -21,8 +19,6 @@ namespace Floomeen.Meen
             var machine = GetInstance(typeName);
 
             var m = machine as MeenBase;
-
-            m.CheckIfWorkflowIsValid();
 
             return m;
         }

@@ -37,8 +37,8 @@ namespace Floomeen.Showroom
         private static bool MachinesAreCompatible(MeenBase master, MeenBase slave)
         {
             return 
-                   master.GetState() == MessagingFloomeen.State.Retrying &&
-                   slave.GetState() == ListenerFloomeen.State.Unchanged;
+                   master.BoundFellow.State == MessagingFloomeen.State.Retrying &&
+                   slave.BoundFellow.State == ListenerFloomeen.State.Unchanged;
         }
 
     }

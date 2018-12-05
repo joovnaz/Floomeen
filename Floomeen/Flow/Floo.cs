@@ -69,9 +69,16 @@ namespace Floomeen.Flow
             }
         }
 
-        public List<string> FromStatesList => _rulesList.FromStates();
+        private List<string> FromStatesList => _rulesList.FromStates();
 
-        public List<string> ToStatesList => _rulesList.ToStates();
+        private List<string> ToStatesList => _rulesList.ToStates();
+
+        public bool CheckState(string state)
+        {
+            return FromStatesList.Contains(state) ||
+                   ToStatesList.Contains(state);
+        }
+
 
         public List<string> AvailableCommands(string state)
         {

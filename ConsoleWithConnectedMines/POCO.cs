@@ -18,13 +18,13 @@ namespace ConsoleWithConnectedMines
         [FloomeenState]
         public string State { get; set; }
         
-        [FloomeenMachine]
+        //[FloomeenMachine]
         public string __FlooType { get; set; }
 
-        [FloomeenChangedOn]
+        //[FloomeenChangedOn]
         public DateTime __FlooUtcStateChangedOn { get; set; }
 
-        [FloomeenStateData]
+        //[FloomeenStateData]
         public string __FlooData { get; set; }
     }
 }
