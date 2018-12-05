@@ -10,7 +10,7 @@ namespace Floomeen.Meen
 
         public string Command { get; set; }
 
-        public IFellow Fellow { get; set; }
+        public Fellow Fellow { get; set; }
 
         public ContextInfo Data { get; set; }
     }

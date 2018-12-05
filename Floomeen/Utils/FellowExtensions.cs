@@ -27,9 +27,9 @@ namespace Floomeen.Utils
         }
 
 
-        public static string Id(this IFellow fellow)
+        public static object Id(this IFellow fellow)
         {
-            return fellow.GetPropValueByAttribute<FloomeenId>()?.ToString();
+            return fellow.GetPropValueByAttribute<FloomeenId>();
         }
 
         public static void Id(this IFellow fellow, object value)

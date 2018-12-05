@@ -18,15 +18,13 @@ namespace Floomeen.Meen
 
         public Floo Flow { get; }
 
-        public IFellow BoundFellow { get; private set; }
+        public Fellow BoundFellow { get; private set; }
 
         public bool IsBound => BoundFellow != null;
 
         protected List<IAdapter> _adapters = new List<IAdapter>();
 
         private readonly ContextInfo _contextData = new ContextInfo();
-
-        private ContextInfo _stateData = new ContextInfo();
 
         private string _executingCommand;
 
@@ -94,22 +92,18 @@ namespace Floomeen.Meen
 
         public void Plug(IFellow fellow)
         {
-            MakeBindingFellowPreliminaryChecks(fellow);
+            DoBindingFellowPreliminaryChecks(fellow);
 
-            fellow.SetPropValueByAttribute<FloomeenMachine>(_typename);
-
-            fellow.SetPropValueByAttribute<FloomeenState>(Flow.StartState);
-
-            fellow.SetPropValueByAttribute<FloomeenChangedOn>(DateTime.UtcNow);
-
-            BoundFellow = fellow;
+            BoundFellow = new Fellow(fellow);
+            
+            BoundFellow.Initialize(_typename, Flow.StartState);
         }
 
         private void CheckIfBindingFellowIdIsNotNullOrEmpty(IFellow fellow)
         {
             var id = fellow.Id();
 
-            if (string.IsNullOrEmpty(id))
+            if (id == null || string.IsNullOrEmpty(id.ToString()))
                 RaiseException("BindingFellowIdCannotBeNullOrEmpty");
         }
 
@@ -118,7 +112,7 @@ namespace Floomeen.Meen
             BoundFellow = null;
         }
 
-        private void MakeBindingFellowPreliminaryChecks(IFellow fellow, bool isBinding = false)
+        private void DoBindingFellowPreliminaryChecks(IFellow fellow, bool isBinding = false)
         {
             CheckIfBound();
 
@@ -136,13 +130,9 @@ namespace Floomeen.Meen
 
         public void Bind(IFellow fellow)
         {
-            MakeBindingFellowPreliminaryChecks(fellow, true);
+            DoBindingFellowPreliminaryChecks(fellow, true);
 
-            BoundFellow = fellow;
-
-            var stateData = fellow.StateData();
-
-            _stateData = stateData == null ? new ContextInfo() : ContextInfo.Deserialize(stateData);
+            BoundFellow = new Fellow(fellow);
         }
 
         private void CheckIfBindingFellowHasMandatoryAttributes(IFellow fellow)
@@ -171,7 +161,6 @@ namespace Floomeen.Meen
 
             if (!IsString(machinePropType))
                 RaiseException($"FellowMachinePropertyMustBeAString");
-
 
             var stateDataPropName = fellow.GetPropNameByAttribute<FloomeenStateData>();
 
@@ -289,7 +278,7 @@ namespace Floomeen.Meen
             {
                 State = currentState,
 
-                StateData = _stateData,
+                StateData = BoundFellow.TempStateData,
 
                 Command = _executingCommand,
 
@@ -305,60 +294,59 @@ namespace Floomeen.Meen
         {
             _executingCommand = command;
 
-            var currentState = GetState();
+            var fromState = GetState();
 
-            var applicableRule = Flow.RetrieveRule(currentState, command);
+            var rule = Flow.RetrieveApplicableRule(fromState, _executingCommand);
 
-            if (applicableRule == null) RaiseException($"UnsupportedCommand '{command}'");
-
-            var fromState = currentState;
-
-            if (applicableRule.IsShort)
+            if (rule.IsShort)
             {
-                SwapState(fromState, applicableRule?.ToState);
+                SwapState(fromState, rule.ToState);
             }
             else
             {
-                var context = CreateContext();
+                ProcessRuleThenSwapState(fromState, rule);
+            }
+        }
 
-                var result = applicableRule.DoFunc.Invoke(context);
+        private void ProcessRuleThenSwapState(string fromState, Rule rule)
+        {
+            var context = CreateContext();
 
-                var conditions = applicableRule.ConditionElements.Reverse();
+            var result = rule.DoFunc.Invoke(context);
 
-                foreach (var condition in conditions)
+            var conditions = rule.ConditionElements.Reverse();
+
+            foreach (var condition in conditions)
+            {
+                var conditionFunc = condition.ConditionFunc;
+
+                if (conditionFunc == null || condition.ConditionFunc.Invoke(result, context))
                 {
-                    var conditionFunc = condition.ConditionFunc;
+                    SwapState(fromState, condition.EndState);
 
-                    if (conditionFunc == null || condition.ConditionFunc.Invoke(result, context))
-                    {
-                        SwapState(fromState, condition.EndState);
-
-                        break;
-                    }
+                    break;
                 }
             }
         }
 
-
         private void SwapState(string fromState, string toState)
         {
-            BoundFellow.StateData(_stateData.Serialize());
-
-            if (toState == fromState) return;
-            
-            ExitState(fromState, CreateContext());
-
-            BoundFellow.State(toState);
+            BoundFellow.SerializeTempStateData();
 
             BoundFellow.ChangedOn(DateTime.UtcNow);
 
-            EnterState(toState, CreateContext());
+            BoundFellow.State(toState);
+
+            if (toState == fromState) return;
+            
+            ExitCurrentState(fromState, CreateContext());
+            
+            EnterNewState(toState, CreateContext());
 
             RaiseEvent(new ChangedStateEvent(this, BoundFellow.Id(), fromState, toState));
-
         }
 
-        private void ExitState(string state, Context context)
+        private void ExitCurrentState(string state, Context context)
         {
             RetrieveSetting(state)?.OnExitEventHandler?.Invoke(context);
 
@@ -370,7 +358,7 @@ namespace Floomeen.Meen
             this.Publish(@event);
         }
 
-        private void EnterState(string state, Context context)
+        private void EnterNewState(string state, Context context)
         {
             RetrieveSetting(state)?.OnEnterEventHandler?.Invoke(context);
 

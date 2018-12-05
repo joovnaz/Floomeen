@@ -82,14 +82,23 @@ namespace Floomeen.Flow
 
         public string StartState => _settingsList.StartState;
 
-        public Rule RetrieveRule(string state, string command)
+        public Rule RetrieveApplicableRule(string state, string command)
         {
-            return _rulesList.Rules.FirstOrDefault(r => r.FromState == state && r.OnCommand == command);
+            var rule = _rulesList.Rules.FirstOrDefault(r => r.FromState == state && r.OnCommand == command);
+
+            if (rule == null) RaiseException($"UnsupportedCommand '{command}'");
+
+            return rule;
         }
 
         public Setting RetrieveSetting(string state)
         {
             return _settingsList.Sets.FirstOrDefault(r => r.Element == state);
+        }
+
+        private void RaiseException(string message)
+        {
+            throw new FloomeenException($"[{_typename}] {message}");
         }
     }
 }
