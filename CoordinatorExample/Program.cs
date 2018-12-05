@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
-using Floomeen.Showroom;
+using Showroom;
 
 namespace ConsoleWithConnectedMines
 {

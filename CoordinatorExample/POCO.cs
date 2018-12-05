@@ -24,7 +24,7 @@ namespace ConsoleWithConnectedMines
         //[FloomeenChangedOn]
         public DateTime __FlooUtcStateChangedOn { get; set; }
 
-        //[FloomeenStateData]
+        [FloomeenStateData]
         public string __FlooData { get; set; }
     }
 }

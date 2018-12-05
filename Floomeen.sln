@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{36373F6C-1D0F-43BD-9A6A-926FFF538E7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleExample", "SimpleExample\SimpleExample.csproj", "{36373F6C-1D0F-43BD-9A6A-926FFF538E7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Floomeen.Tests", "Floomeen.Tests\Floomeen.Tests.csproj", "{71189C6C-36B7-432A-A740-4F8F09BC944C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Floomeen", "Floomeen\Floomeen.csproj", "{EA65150B-804E-4AD9-A653-D3A6AAFAC1B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleWithConnectedMines", "ConsoleWithConnectedMines\ConsoleWithConnectedMines.csproj", "{25D33C4C-8DE1-4CF2-B436-F402C8D996D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoordinatorExample", "CoordinatorExample\CoordinatorExample.csproj", "{25D33C4C-8DE1-4CF2-B436-F402C8D996D0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92D7F0E9-C287-40D9-8F98-D2720FDBD0C8}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Showroom", "Showroom\Showroom.csproj", "{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{25D33C4C-8DE1-4CF2-B436-F402C8D996D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25D33C4C-8DE1-4CF2-B436-F402C8D996D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25D33C4C-8DE1-4CF2-B436-F402C8D996D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using System;
 using Floomeen.Meen;
 
-namespace Floomeen.Showroom
+namespace Showroom
 {
     public class RadioFloomeen : MeenBase
     {

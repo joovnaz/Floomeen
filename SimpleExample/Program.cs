@@ -1,5 +1,5 @@
 ﻿using Floomeen.Adapters.MessageSender;
-using Floomeen.Showroom;
+using Showroom;
 
 namespace Console
 {
