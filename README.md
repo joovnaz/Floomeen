@@ -88,11 +88,7 @@ For example, if our switcher is created on an `On` as start state, we would code
         .IsStartState();
 ```
 
-# Floomeen By Examples
-
-We use some example to better understand how Floomeen works.
-
-## Building the `SwitcherFloomeen`
+## The `SwitcherFloomeen`
 
 The switcher in our example not become the `SwitcherFloomeen`. 
 As said following a simple workflow:
@@ -153,26 +149,19 @@ Later we will go thorough more complex transitions.
 You might find helpful to describe a rule by passing `AddTransition` argument, 
 such as `"SwitchOffTransition"` or `"Whatever this transition does!"`.  
 
-Our `SwitcherFloomeen` was born.
-Now what?  
+Our `SwitcherFloomeen` was born. Now what?  
 
-Well she is ready to go (forgot to tell you that a Floomeen must always be gently treated as a lady)... but wait.
-Before moving on we need to provide Floomeen a persistence mechanism to store states, 
-i.e. an entity to make machine states persistent over time.
+Before moving on we need to introduce Floomeen persistency mechanism, i.e. how states are peristed, or an entity to make machine states persistent over time.
 
-# State Persitence
+### Persisting State: POCO Classes and Floomeen Attributes
 
-Bla bla bla ...
-
-## POCO Classes and Floomeen Attributes
-
-In order to persist state, Floomeen can use generic POCO (Plain Old CLR Object) classes (see [POCO Classes](https://www.c-sharpcorner.com/UploadFile/5d065a/poco-classes-in-entity-framework/)). 
-You can use whatever POCO classes you like, provided you are able to enrich properties with Floomeen attributes.  
+To persist state, Floomeen can use any generic POCO (Plain Old CLR Object) class (see [POCO Classes](https://www.c-sharpcorner.com/UploadFile/5d065a/poco-classes-in-entity-framework/)). 
+Any POCO classes can get the job done, provided can be enriched with few Floomeen attributes. 
 Let's see how it works.
 
-## `CustomerOrder` POCO Class Example
+## The `CustomerOrderFloomeen`
 
-Imaging our customers order management application using some a `CustomerOrder` class, something like:
+As second example, imagine a customers order management application using a `CustomerOrder` class, something like:
 
 ```
 public class CustomerOrder {
@@ -192,32 +181,27 @@ public class CustomerOrder {
 }
 ```
 
-Naturally this is a greatly simplified data model of course. 
-`CustomerOrderId` property represents a unique key of our order, 
-and `CustomerId` is a foreign key to Customer entity. 
+Naturally this is a greatly simplified data model of course. Here `CustomerOrderId` property represents a unique key of our order, 
+and `CustomerId` is a foreign key to Customer entity. A `Customer` has one-or-more `CustomerOrders`.
 
-Clearly, our CustomerOrder owns a state (right?) on our case the `OrderStatus` property. 
-So far so good.
+Clearly, our order will own a state (right?) here stored by the `OrderStatus` property. So far so good.
 
-Now imaging to use Floomeen for managing a real customer order FSM workflow. 
-We definitively to persist state data using `CustomerOrder` POCO entity.
-
-Before processing let's take a step back.  
-Suppose Customer order to go through three simple states: `New`, `Shipping` and `Delivered`.
-When the order is firstly created in the system its state is `New`, waiting to get shipped. 
-While on the jorney to arrive at Customer location once departed from our warehouse, the state of the customer order will be `Shipping`. 
-Finally the order status will change to `Delivered` right after customer signature.
+Imagine also our customers order going through three simple states: `New`, `Shipping` and `Delivered`.
+When the order is firstly created in the system its state become `New`, waiting to get shipped. 
+After cargo, while on the jorney to arrive at Customer location, the state of the order is `Shipping`. 
+Finally, order status will be `Delivered` right after the customer signature.
 
 This how our `CustomerOrderFloomeen` would look like:
 
 ```
-public class CustomerOrderFloomeen : MineBase {
+
+public class CustomerOrderFloomeen : MeenBase {
 
         public struct State
         {
             public const string New = "New";
             public const string Shipping = "Shipping";
-            public const string Delivered = "Shipping";
+            public const string Delivered = "Delivered";
         }
 
         public struct Command
@@ -228,18 +212,18 @@ public class CustomerOrderFloomeen : MineBase {
 
         public CustomerOrderFloomeen()
         {
-            Floo.AddSetting(State.New)
+            Flow.AddSetting(State.New)
                 .IsStartState();
 
-            Floo.AddSetting(State.Delivered)
+            Flow.AddSetting(State.Delivered)
                 .IsEndState();
             
-            Floo.AddTransition("CargoTransition")
+            Flow.AddTransition("CargoTransition")
                 .From(State.New)
                 .On(Command.Cargo)
                 .GoTo(State.Shipping);
 
-            Floo.AddTransition("HandTransition")
+            Flow.AddTransition("HandTransition")
                 .From(State.Shipping)
                 .On(Command.Hand)
                 .GoTo(State.Delivered);
@@ -247,8 +231,63 @@ public class CustomerOrderFloomeen : MineBase {
     }
 
 }
+
 ```
 
-## From POCO class to Fellow
+### From POCO class to Fellow
+
+The POCO class used to store customer order data, now is ready to be used by Floomeen, by adding two attributes:
+
+```
+public class CustomerOrder : IFellow
+{
+
+	[FloomeenId]
+	public string CustomerOrderId { get; set;}
+
+	public string CustomerId { get; set; }
+
+	public string ShippingAddress { get; set; }
+
+	public string Product { get; set; }
+
+	public int Quantity { get; set; }
+
+	[FloomeenState]
+	public string OrderStatus { get; set; }
+
+	[FloomeenMachine]
+	public string FloomeenMachine { get; set; }
+   ...
+}
+
+```
+
+The attributes `[FloomeenId]` and `[FloomeenState]` allow to map the customer order unique identifaction and its state with Floomine workflow.
+In our case are mapped to existing properties of the POCO class.
+
+A new property is introduced the `FloomeenMachine`. (---)
+
+The interface IFellow (simply an empty interface) allows Floomeen to associate its engine and manage persistency by `IFellow` interface.
+That it.
+Finally some setup code to allow Floomeen to plug the new born customer order:
+
+```
+
+var customerOrder = new CustomerOrder { 
+		CustomerOrderId = "xxxx-xxxx" 
+		...
+};
+
+var machine = new CustomerOrderFloomeen();
+
+machine.Plug(customerOrder)
+
+```
+
+The above code let Floomeen "plugging" an entity, i.e. forcing the state of new born entity to start state.
+
+
+
 
 
