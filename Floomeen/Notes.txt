@@ -1,0 +1,5 @@
+﻿
+Publish Nuget
+=============
+
+$ dotnet nuget push Floomine.<version>.nupkg -k oy2cbyhxaotrazxrpsuangnkh4orgdjujodt6xj4yjvc7m -s https://api.nuget.org/v3/index.json
