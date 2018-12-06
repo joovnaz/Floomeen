@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Floomeen.Meen
 {
@@ -14,13 +15,13 @@ namespace Floomeen.Meen
 
     public static class Factory
     {
-        public static MeenBase Create(string typeName)
+        public static T Create<T>(string typeName)
         {
             var machine = GetInstance(typeName);
 
-            var m = machine as MeenBase;
+            if (machine is T) return (T) machine;
 
-            return m;
+            throw new Exception($"ClassTypeNotExists[{typeName}]");
         }
 
         public static T GetInstance<T>()
@@ -32,12 +33,28 @@ namespace Floomeen.Meen
 
         public static object GetInstance(string settingsType)
         {
-            Type t = Type.GetType(settingsType);
+            Type t = SearchType(settingsType);
 
             if (t == null)
-                throw new Exception($"MissingFloomeenClassType[{settingsType}]");
+                throw new Exception($"ClassTypeNotExists[{settingsType}]");
 
             return Activator.CreateInstance(t);
         }
+
+        public static Type SearchType(string settingsType)
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (Assembly assembly in assemblies)
+            {
+                Type type = assembly.GetType(settingsType);
+
+                if (type != null) return type;
+            }
+
+            return null;
+        }
+
+
     }
 }

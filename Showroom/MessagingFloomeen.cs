@@ -4,7 +4,6 @@ using Floomeen.Meen;
 
 namespace Showroom
 {
-
     public class MessagingFloomeen : MeenBase
     {
         public struct State
