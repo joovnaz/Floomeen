@@ -1,7 +1,4 @@
-﻿using System;
-using Floomeen.Meen;
-
-namespace Floomeen.Flow.FluentApi
+﻿namespace Floomeen.Flow.Fluent
 {
     public interface IOn
     {

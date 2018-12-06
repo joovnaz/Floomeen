@@ -1,5 +1,4 @@
-﻿using System;
-using Floomeen.Attributes;
+﻿using Floomeen.Attributes;
 using Floomeen.Meen.Interfaces;
 
 namespace Floomeen.Tests.FloomeenShould

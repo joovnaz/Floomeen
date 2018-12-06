@@ -26,8 +26,8 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("OnState").IsStartState();
-            wf.AddSetting("ErrorState").IsEndState();
+            wf.AddStateSetting("OnState").IsStartState();
+            wf.AddStateSetting("ErrorState").IsEndState();
             wf.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
@@ -47,8 +47,8 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("OnState").IsStartState();
-            wf.AddSetting("ErrorState").IsEndState();
+            wf.AddStateSetting("OnState").IsStartState();
+            wf.AddStateSetting("ErrorState").IsEndState();
             wf.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
@@ -69,8 +69,8 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("OnState").IsStartState();
-            wf.AddSetting("ErrorState").IsEndState();
+            wf.AddStateSetting("OnState").IsStartState();
+            wf.AddStateSetting("ErrorState").IsEndState();
             wf.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
@@ -94,8 +94,8 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("OnState").IsStartState();
-            wf.AddSetting("ErrorState").IsEndState();
+            wf.AddStateSetting("OnState").IsStartState();
+            wf.AddStateSetting("ErrorState").IsEndState();
             wf.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
@@ -120,8 +120,8 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("OnState").IsStartState();
-            wf.AddSetting("ErrorState").IsEndState();
+            wf.AddStateSetting("OnState").IsStartState();
+            wf.AddStateSetting("ErrorState").IsEndState();
 
             wf.AddTransition()
                 .From("OnState")

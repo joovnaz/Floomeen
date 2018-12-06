@@ -1,5 +1,4 @@
-﻿using System;
-using Floomeen.Adapters.MessageSender;
+﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
 namespace Showroom
@@ -33,20 +32,20 @@ namespace Showroom
 
         public MessagingFloomeen()
         {
-            Flow.AddSetting(State.Ready)
+            Flow.AddStateSetting(State.Ready)
                 .IsStartState()
                 .OnEnterEvent(ManageOnEnterEvent)
                 .OnExitEvent(ManageOnExitEvent);
 
-            Flow.AddSetting(State.Retrying)
+            Flow.AddStateSetting(State.Retrying)
                 .IsStartState()
                 .OnEnterEvent(ManageOnEnterEvent)
                 .OnExitEvent(ManageOnExitEvent);
             
-            Flow.AddSetting(State.Error)
+            Flow.AddStateSetting(State.Error)
                 .IsEndState();
 
-            Flow.AddSetting(State.Sent)
+            Flow.AddStateSetting(State.Sent)
                 .IsEndState();
 
             Flow.AddTransition("SendingFlow")

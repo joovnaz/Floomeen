@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Floomeen.Adapters;
-using Floomeen.Attributes;
 using Floomeen.Exceptions;
 using Floomeen.Flow;
 using Floomeen.Meen.Events;
@@ -30,13 +28,13 @@ namespace Floomeen.Meen
 
         public string CurrentState => BoundFellow?.State;
 
+        private bool _isChecked = false;
+
         protected MeenBase(string typename)
         {
             _typename = string.IsNullOrEmpty(typename) ? GetType().FullName : typename;
 
             Flow = new Floo(_typename);
-
-            Flow.CheckValidity();
         }
 
         protected MeenBase() : this(string.Empty)
@@ -48,7 +46,7 @@ namespace Floomeen.Meen
 
         public void InjectAdapter(string typeName)
         {
-            var adapter = Factory.GetInstance(typeName);
+            var adapter = FactoryExtensions.GetInstance(typeName);
 
             if (adapter is IAdapter castedAdapter)
             {
@@ -61,7 +59,7 @@ namespace Floomeen.Meen
 
         public void InjectAdapter<T>() where T : IAdapter
         {
-            var adapter = Factory.GetInstance<T>();
+            var adapter = FactoryExtensions.GetInstance<T>();
 
             Adapters.Add(adapter);
         }
@@ -85,7 +83,7 @@ namespace Floomeen.Meen
             if (BoundFellow.IsSet())
                 FloomeenException.Raise(_typename, "CannotPlugFellowBecauseAlreadySet.TryBinding");
 
-            BoundFellow.Plug(_typename, Flow.StartState);
+            BoundFellow.Plug(_typename, Flow.StartState());
         }
 
         public void Bind(IFellow fellow)
@@ -100,7 +98,7 @@ namespace Floomeen.Meen
 
             BoundFellow.CheckMachineType();
 
-            Flow.CheckState(BoundFellow.State);
+            Flow.IsExistingState(BoundFellow.State);
         }
 
         public void Unbind()

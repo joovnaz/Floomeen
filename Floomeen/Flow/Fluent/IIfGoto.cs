@@ -1,4 +1,4 @@
-﻿namespace Floomeen.Flow.FluentApi
+﻿namespace Floomeen.Flow.Fluent
 {
     public interface IIfGoto
     {

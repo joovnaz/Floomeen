@@ -19,10 +19,10 @@ namespace Floomeen.Tests.FloomeenShould
 
         public CustomerOrderFloomeen()
         {
-            Flow.AddSetting(State.New)
+            Flow.AddStateSetting(State.New)
                 .IsStartState();
 
-            Flow.AddSetting(State.Delivered)
+            Flow.AddStateSetting(State.Delivered)
                 .IsEndState();
             
             Flow.AddTransition("CargoTransition")

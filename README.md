@@ -311,23 +311,7 @@ Now that our Floomine is running, we can send commands as by workflow, e.g.
 	Console.WriteLine($"Available commands: {string.Join(",", machine.AvailableCommands() )}");
 	...
 ```
-The above code would show the message `Customer Order xxxx-xxxx is Shipping`. Naturally sending a command not stated by Floomine workflow would raise an exception.
-At any time you can query the machine to obtain a list of available commands, in our case a second message shows `Available commands: Hand`, only a commands is in fact available.
+The above code would show the message `Customer Order xxxx-xxxx is Shipping`. Naturally sending a command not defined by Floomine workflow would raise an exception.
+At any time you can query the machine to obtain a list of available commands, in our case a second message shows `Available commands: Hand`, only one command is in fact available.
 
 
-
-## The `CustomerOrderFloomeen` (v 2.0)
-
-Imagine to enhance our customer order workflow as follow:
-
-1. Start at New state;
-1. From New state, on receiving a Cargo command do the following:
-   - check if package is ready, if yes goto Shipping state otherwise goto Packaging state;
-
-1. From Shipping state, on receiving an Hand commad do the follwing:
-   - try to deliver the pacakage, if success goto Delivered, if less than 3 attempts remain on Shipping state, otherwise goto Undeliverable
-
-1. From Packaging state, on receiving a Packaged command goto Shipping
-
-
-....

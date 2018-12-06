@@ -1,29 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Floomeen.Exceptions;
-using Floomeen.Flow.FluentApi;
+using Floomeen.Flow.Fluent;
+using Floomeen.Flow.Settings.State;
 
 namespace Floomeen.Flow
 {
     public class Floo
     {
-        private readonly string _typename;
+        private readonly string _machineName;
 
-        private readonly RulesList _rulesList;
+        private readonly RulesValidator _rulesValidator;
 
-        private readonly SettingsList _settingsList;
+        private readonly StateSettingsValidator _stateSettingsValidator;
 
-        public Floo(string typename) : this()
+        public Floo(string machineName) : this()
         {
-            _typename = typename;
+            _machineName = machineName;
         }
 
         public Floo()
         {
-            _rulesList = new RulesList();
+            _rulesValidator = new RulesValidator(_machineName);
 
-            _settingsList = new SettingsList();
+            _stateSettingsValidator = new StateSettingsValidator(_machineName);
         }
+
+        #region Fluent
 
         public IFrom AddTransition()
         {
@@ -34,32 +36,34 @@ namespace Floomeen.Flow
         {
             var wfx = new Rule(rulename);
 
-            _rulesList.Rules.Add(wfx);
+            _rulesValidator.Rules.Add(wfx);
 
             return wfx;
         }
 
-        public ISetting AddSetting(string element)
+        public IStateSetting AddStateSetting(string state)
         {
-            var setx = new Setting(element);
+            var stateSetting = new StateSetting(state);
 
-            _settingsList.Sets.Add(setx);
+            _stateSettingsValidator.Add(stateSetting);
 
-            return setx;
+            return stateSetting;
         }
 
-        public void CheckValidity()
-        {
-            var validator = new Validator(_typename, _rulesList, _settingsList);
+        #endregion
 
-            validator.CheckValidity();
+        public void Check()
+        {
+            _rulesValidator.Check();
+
+            _stateSettingsValidator.Check(_rulesValidator.FromStates, _rulesValidator.ToStates());
         }
 
         public bool IsValid()
         {
             try
             {
-                CheckValidity();
+                Check();
 
                 return true;
             }
@@ -68,44 +72,31 @@ namespace Floomeen.Flow
                 return false;
             }
         }
-
-        private List<string> FromStatesList => _rulesList.FromStates();
-
-        private List<string> ToStatesList => _rulesList.ToStates();
-
-        public bool CheckState(string state)
+        
+        public bool IsExistingState(string state)
         {
-            return FromStatesList.Contains(state) ||
-                   ToStatesList.Contains(state);
+            return _rulesValidator.IsExistingState(state);
         }
-
 
         public List<string> AvailableCommands(string state)
         {
-            var filtered = _rulesList.Rules.Where(r => r.FromState == state);
-
-            return filtered.Select(r => r.OnCommand).ToList();
+            return _rulesValidator.AvailableCommands(state);
         }
 
-        public string StartState => _settingsList.StartState;
+        public string StartState()
+        {
+            return _stateSettingsValidator.StartState();
+        } 
 
         public Rule RetrieveApplicableRule(string state, string command)
         {
-            var rule = _rulesList.Rules.FirstOrDefault(r => r.FromState == state && r.OnCommand == command);
-
-            if (rule == null) RaiseException($"UnsupportedCommand '{command}'");
-
-            return rule;
+            return _rulesValidator.RetrieveApplicableRule(state, command);
         }
 
-        public Setting RetrieveSetting(string state)
+        public StateSetting RetrieveSetting(string state)
         {
-            return _settingsList.Sets.FirstOrDefault(r => r.Element == state);
+            return _stateSettingsValidator.RetrieveSetting(state);
         }
 
-        private void RaiseException(string message)
-        {
-            throw new FloomeenException($"[{_typename}] {message}");
-        }
     }
 }

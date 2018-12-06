@@ -16,7 +16,7 @@ namespace SimpleExample
 
             var message = CreateMessage(poco);
 
-            var machine = Factory.Create<MessagingFloomeen>("Showroom.MessagingFloomeen");
+            var machine = Factory<MessagingFloomeen>.Create();
 
             //var machine = new MessagingFloomeen();
 
@@ -39,6 +39,7 @@ namespace SimpleExample
             const int attempts = 3;
 
             // Retries
+
             for (var i = 0; i < attempts; i++)
             {
                 machine.Bind(poco);

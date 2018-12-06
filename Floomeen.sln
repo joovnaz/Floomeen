@@ -17,7 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Showroom", "Showroom\Showroom.csproj", "{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Showroom", "Showroom\Showroom.csproj", "{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{4D678013-4E36-422A-B9D1-D1C64919C0FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioExample", "RadioExample\RadioExample.csproj", "{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +49,18 @@ Global
 		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{803AB827-1A0F-45F6-B65D-D4A1FFFB709B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{36373F6C-1D0F-43BD-9A6A-926FFF538E7F} = {4D678013-4E36-422A-B9D1-D1C64919C0FA}
+		{25D33C4C-8DE1-4CF2-B436-F402C8D996D0} = {4D678013-4E36-422A-B9D1-D1C64919C0FA}
+		{7CAEE1AF-C292-481D-9A86-2B73DBB72C4C} = {4D678013-4E36-422A-B9D1-D1C64919C0FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {31E074BB-BB54-41E0-A949-25CA2CE96174}

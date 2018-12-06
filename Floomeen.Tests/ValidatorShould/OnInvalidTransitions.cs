@@ -35,7 +35,7 @@ namespace Floomeen.Tests.ValidatorShould
                 .On("SendMessage");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -53,7 +53,7 @@ namespace Floomeen.Tests.ValidatorShould
                 .Do(ctx => FakeFunk(ref ctx));
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
             
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -72,7 +72,7 @@ namespace Floomeen.Tests.ValidatorShould
                 .When(FakeCheck);
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -93,7 +93,7 @@ namespace Floomeen.Tests.ValidatorShould
                 .When(FakeCheck);
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -118,7 +118,7 @@ namespace Floomeen.Tests.ValidatorShould
                 ;
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -148,7 +148,7 @@ namespace Floomeen.Tests.ValidatorShould
                     ;
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);

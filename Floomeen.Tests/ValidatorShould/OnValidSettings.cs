@@ -27,7 +27,7 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("StartState").IsStartState();
+            wf.AddStateSetting("StartState").IsStartState();
 
             wf.AddTransition().From("StartState").On("Command").GoTo("EndState");
 
@@ -44,7 +44,7 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("EndState").IsEndState();
+            wf.AddStateSetting("EndState").IsEndState();
 
             wf.AddTransition().From("StartState").On("Command").GoTo("EndState");
 
@@ -61,7 +61,7 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("EndState")
+            wf.AddStateSetting("EndState")
               .IsEndState()
               .OnEnterEvent(FakeEnterExitCallback);
 
@@ -80,7 +80,7 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("EndState")
+            wf.AddStateSetting("EndState")
                 .IsEndState()
                 .OnEnterEvent(FakeEnterExitCallback)
                 .OnExitEvent(FakeEnterExitCallback);

@@ -29,10 +29,10 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("State");
+            wf.AddStateSetting("State");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -44,12 +44,12 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("State");
+            wf.AddStateSetting("State");
 
             wf.AddTransition().From("State").On("Command").GoTo("End");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -61,12 +61,12 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("MissingState").IsStartState();
+            wf.AddStateSetting("MissingState").IsStartState();
 
             wf.AddTransition().From("State").On("Command").GoTo("End");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -78,12 +78,12 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("StartState").IsEndState();
+            wf.AddStateSetting("StartState").IsEndState();
 
             wf.AddTransition().From("StartState").On("Command").GoTo("EndState");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);
@@ -95,12 +95,12 @@ namespace Floomeen.Tests.ValidatorShould
             //arrange
             var wf = new Floo();
 
-            wf.AddSetting("EndState").IsStartState();
+            wf.AddStateSetting("EndState").IsStartState();
 
             wf.AddTransition().From("State").On("Command").GoTo("EndState");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);

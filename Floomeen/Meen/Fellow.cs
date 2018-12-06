@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Floomeen.Attributes;
 using Floomeen.Exceptions;
 using Floomeen.Meen.Interfaces;
@@ -38,6 +36,9 @@ namespace Floomeen.Meen
 
         public void Plug(string machineType, string state)
         {
+            if (string.IsNullOrEmpty(state))
+                RaiseException("StateIsNullOrEmpty");
+
             _fellow.SetPropValueByAttribute<FloomeenState>(state);
 
             if (SupportMachine)

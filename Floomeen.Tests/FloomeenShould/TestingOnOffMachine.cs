@@ -22,7 +22,7 @@ namespace Floomeen.Tests.FloomeenShould
         public TestingOnOffMachine()
         {
 
-            Flow.AddSetting(State.On)
+            Flow.AddStateSetting(State.On)
               .IsStartState();
 
             Flow.AddTransition("SwitchOnTransition")

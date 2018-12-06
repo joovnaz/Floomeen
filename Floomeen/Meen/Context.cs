@@ -1,6 +1,4 @@
-﻿using Floomeen.Meen.Interfaces;
-
-namespace Floomeen.Meen
+﻿namespace Floomeen.Meen
 {
     public class Context
     {

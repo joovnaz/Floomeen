@@ -37,7 +37,7 @@ namespace Floomeen.Tests.ValidatorShould
                 .From("OnState").On("Command").GoTo("State");
 
             //act
-            Action act = () => wf.CheckValidity();
+            Action act = () => wf.Check();
 
             //assert
             Assert.Throws<FloomeenException>(act);

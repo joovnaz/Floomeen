@@ -19,7 +19,7 @@ namespace Showroom
         public FlipperFloomeen()
         {
 
-            Flow.AddSetting(State.Unchanged).IsStartState();
+            Flow.AddStateSetting(State.Unchanged).IsStartState();
 
             Flow.AddTransition("FlipTransition")
                 .From(State.Unchanged)

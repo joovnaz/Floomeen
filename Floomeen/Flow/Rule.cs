@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Floomeen.Exceptions;
-using Floomeen.Flow.FluentApi;
+using Floomeen.Flow.Fluent;
 using Floomeen.Meen;
 
 namespace Floomeen.Flow
