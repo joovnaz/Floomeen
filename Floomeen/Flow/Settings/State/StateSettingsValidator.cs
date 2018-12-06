@@ -20,7 +20,9 @@ namespace Floomeen.Flow.Settings.State
 
         public string StartState()
         {
-            return StateSettings?.First(s => s.IsStart)?.State;
+            var startState = StateSettings?.FirstOrDefault(s => s.IsStart);
+
+            return startState?.State;
         }
         
         public void Check(List<string> fromStates, List<string> toStates)
@@ -42,17 +44,13 @@ namespace Floomeen.Flow.Settings.State
 
                 RaiseException("InvalidState");
 
-            if (!stateSetting.IsEnd && !stateSetting.IsStart)
-
-                RaiseException("InvalidSetting");
-
             if (stateSetting.IsStart && !fromStates.Contains(stateSetting.State))
 
-                RaiseException("InvalidSettingNotFromState");
+                RaiseException("InvalidSettingStartStateNotPresentInAnyRule");
 
             if (stateSetting.IsEnd && !toStates.Contains(stateSetting.State))
 
-                RaiseException("InvalidSettingNotEndState");
+                RaiseException("InvalidSettingEndStateNotPresentInAnyRule");
         }
 
         public void Add(StateSetting stateSetting)

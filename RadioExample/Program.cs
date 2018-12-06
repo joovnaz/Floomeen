@@ -26,7 +26,7 @@ namespace RadioExample
         {
             var radio = Factory<RadioFloomeen>.Create();
 
-            var poco = new RadioPOCO {RadioId = 1};
+            var poco = new RadioPOCO { RadioId = 1 };
 
             radio.Plug(poco);
 

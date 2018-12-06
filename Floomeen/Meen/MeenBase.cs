@@ -12,7 +12,7 @@ namespace Floomeen.Meen
 {
     public class MeenBase
     {
-        private readonly string _typename;
+        private readonly string _machineName;
 
         protected List<IAdapter> Adapters = new List<IAdapter>();
 
@@ -32,9 +32,9 @@ namespace Floomeen.Meen
 
         protected MeenBase(string typename)
         {
-            _typename = string.IsNullOrEmpty(typename) ? GetType().FullName : typename;
+            _machineName = string.IsNullOrEmpty(typename) ? GetType().FullName : typename;
 
-            Flow = new Floo(_typename);
+            Flow = new Floo(_machineName);
         }
 
         protected MeenBase() : this(string.Empty)
@@ -76,25 +76,25 @@ namespace Floomeen.Meen
         public void Plug(IFellow fellow)
         {
             if (IsBound)
-                FloomeenException.Raise(_typename, "AlreadyBound");
+                FloomeenException.Raise(_machineName, "AlreadyBound");
 
-            BoundFellow = new Fellow(fellow, _typename);
+            BoundFellow = new Fellow(fellow, _machineName);
 
             if (BoundFellow.IsSet())
-                FloomeenException.Raise(_typename, "CannotPlugFellowBecauseAlreadySet.TryBinding");
+                FloomeenException.Raise(_machineName, "CannotPlugFellowBecauseAlreadySet.TryBinding");
 
-            BoundFellow.Plug(_typename, Flow.StartState());
+            BoundFellow.Plug(_machineName, Flow.StartState());
         }
 
         public void Bind(IFellow fellow)
         {
             if (IsBound)
-                FloomeenException.Raise(_typename, "AlreadyBound");
+                FloomeenException.Raise(_machineName, "AlreadyBound");
 
-            BoundFellow = new Fellow(fellow, _typename);
+            BoundFellow = new Fellow(fellow, _machineName);
 
             if (!BoundFellow.IsSet())
-                FloomeenException.Raise(_typename, "CannotBindFellowBecauseNotSet.TryPlugging");
+                FloomeenException.Raise(_machineName, "CannotBindFellowBecauseNotSet.TryPlugging");
 
             BoundFellow.CheckMachineType();
 

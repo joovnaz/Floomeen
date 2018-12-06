@@ -13,16 +13,21 @@ namespace Floomeen.Flow
 
         private readonly StateSettingsValidator _stateSettingsValidator;
 
-        public Floo(string machineName) : this()
+        public Floo(string machineName)
         {
             _machineName = machineName;
+
+            _rulesValidator = new RulesValidator(machineName);
+
+            _stateSettingsValidator = new StateSettingsValidator(machineName);
+
         }
 
         public Floo()
         {
-            _rulesValidator = new RulesValidator(_machineName);
+            _rulesValidator = new RulesValidator(string.Empty);
 
-            _stateSettingsValidator = new StateSettingsValidator(_machineName);
+            _stateSettingsValidator = new StateSettingsValidator(string.Empty);
         }
 
         #region Fluent

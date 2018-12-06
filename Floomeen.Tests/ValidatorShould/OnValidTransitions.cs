@@ -16,26 +16,29 @@ namespace Floomeen.Tests.ValidatorShould
         {
             return result.Success;
         }
+
         static void FakeEnterExitCallback(Context context)
         {
+
         }
 
         [Fact]
         public void ReturnTrueWhenRule1IsValid()
         {
             //arrange
-            var wf = new Floo();
+            var flow = new Floo();
 
-            wf.AddStateSetting("OnState").IsStartState();
-            wf.AddStateSetting("ErrorState").IsEndState();
-            wf.AddTransition()
+            flow.AddStateSetting("OnState").IsStartState();
+
+            flow.AddStateSetting("ErrorState").IsEndState();
+
+            flow.AddTransition()
                 .From("OnState")
-                .On("SendMessage")
-                .GoTo("ErrorState")
-                ;
+                    .On("SendMessage")
+                        .GoTo("ErrorState");
 
             //act
-            bool isValid = wf.IsValid();
+            bool isValid = flow.IsValid();
 
             //assert
             Assert.True(isValid);
@@ -45,19 +48,20 @@ namespace Floomeen.Tests.ValidatorShould
         public void ReturnTrueWhenRule2IsValid()
         {
             //arrange
-            var wf = new Floo();
+            var flow = new Floo();
 
-            wf.AddStateSetting("OnState").IsStartState();
-            wf.AddStateSetting("ErrorState").IsEndState();
-            wf.AddTransition()
+            flow.AddStateSetting("OnState").IsStartState();
+
+            flow.AddStateSetting("ErrorState").IsEndState();
+
+            flow.AddTransition()
                 .From("OnState")
-                .On("SendMessage")
-                .Do(ctx => FakeFunk(ref ctx))
-                    .When(FakeCheck).GoTo("ErrorState")
-                ;
+                    .On("SendMessage")
+                    .Do(ctx => FakeFunk(ref ctx))
+                        .When(FakeCheck).GoTo("ErrorState");
 
             //act
-            bool isValid = wf.IsValid();
+            bool isValid = flow.IsValid();
 
             //assert
             Assert.True(isValid);
@@ -67,22 +71,23 @@ namespace Floomeen.Tests.ValidatorShould
         public void ReturnTrueWhenRule3IsValid()
         {
             //arrange
-            var wf = new Floo();
+            var flow = new Floo();
 
-            wf.AddStateSetting("OnState").IsStartState();
-            wf.AddStateSetting("ErrorState").IsEndState();
-            wf.AddTransition()
+            flow.AddStateSetting("OnState").IsStartState();
+
+            flow.AddStateSetting("ErrorState").IsEndState();
+
+            flow.AddTransition()
                 .From("OnState")
-                .On("SendMessage")
-                .Do(ctx => FakeFunk(ref ctx))
-                    .When(FakeCheck)
-                        .GoTo("SentState")
-                    .When(FakeCheck)
-                        .GoTo("ErrorState")
-                ;
+                    .On("SendMessage")
+                    .Do(ctx => FakeFunk(ref ctx))
+                        .When(FakeCheck)
+                            .GoTo("SentState")
+                        .When(FakeCheck)
+                            .GoTo("ErrorState");
 
             //act
-            bool isValid = wf.IsValid();
+            bool isValid = flow.IsValid();
 
             //assert
             Assert.True(isValid);
@@ -92,11 +97,13 @@ namespace Floomeen.Tests.ValidatorShould
         public void ReturnTrueWhenRule4IsValid()
         {
             //arrange
-            var wf = new Floo();
+            var flow = new Floo();
 
-            wf.AddStateSetting("OnState").IsStartState();
-            wf.AddStateSetting("ErrorState").IsEndState();
-            wf.AddTransition()
+            flow.AddStateSetting("OnState").IsStartState();
+
+            flow.AddStateSetting("ErrorState").IsEndState();
+
+            flow.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
                 .Do(ctx => FakeFunk(ref ctx))
@@ -108,7 +115,7 @@ namespace Floomeen.Tests.ValidatorShould
                         .StayAt("OnState");
 
             //act
-            bool isValid = wf.IsValid();
+            bool isValid = flow.IsValid();
 
             //assert
             Assert.True(isValid);
@@ -118,12 +125,13 @@ namespace Floomeen.Tests.ValidatorShould
         public void ReturnTrueWhen2Rule4IsValid()
         {
             //arrange
-            var wf = new Floo();
+            var flow = new Floo();
 
-            wf.AddStateSetting("OnState").IsStartState();
-            wf.AddStateSetting("ErrorState").IsEndState();
+            flow.AddStateSetting("OnState").IsStartState();
 
-            wf.AddTransition()
+            flow.AddStateSetting("ErrorState").IsEndState();
+
+            flow.AddTransition()
                 .From("OnState")
                 .On("SendMessage")
                 .Do(ctx => FakeFunk(ref ctx))
@@ -134,7 +142,7 @@ namespace Floomeen.Tests.ValidatorShould
                     .Otherwise()
                         .GoTo("OnState");
 
-            wf.AddTransition()
+            flow.AddTransition()
                 .From("OnState")
                 .On("SendSmS")
                 .Do(ctx => FakeFunk(ref ctx))
@@ -142,7 +150,7 @@ namespace Floomeen.Tests.ValidatorShould
                         .GoTo("SentState");
 
             //act
-            bool isValid = wf.IsValid();
+            bool isValid = flow.IsValid();
 
             //assert
             Assert.True(isValid);

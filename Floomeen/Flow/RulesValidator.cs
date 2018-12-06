@@ -88,19 +88,10 @@ namespace Floomeen.Flow
         private void CheckRules()
         {
             if (Rules == null)
+
                 RaiseException("UndefinedRuleset");
 
             Rules.ForEach(CheckRule);
-
-            foreach (var fromState in FromStates)
-            {
-                if (Rules.Count(r => r.FromState == fromState) > 1)
-                    RaiseException($"DoubleOnEnterActionDefinedFromState [{fromState}]");
-
-                if (Rules.Count(r => r.FromState == fromState) > 1)
-                    RaiseException($"DoubleOnExitActionDefinedFromState [{fromState}]");
-
-            }
         }
 
         private void CheckRule(Rule rule)
