@@ -1,88 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoordinatorExample.POCOs;
 using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
+using Floomeen.Meen.Interfaces;
 using Showroom;
 
-namespace ConsoleWithConnectedMines
+namespace CoordinatorExample
 {
     class Program
     {
         public static string MessageTemplate = "Dear {0}, <br/> please get in contact with us by clicking on <a href=\"{1}\">this link</a>";
 
-        public static List<POCO> messages = new List<POCO>
+        public static List<CustomerPOCO> Customers = new List<CustomerPOCO>
         {
-            new POCO {Id = "1", Name = "P1", Email = "p1@p1.me"},
-            new POCO {Id = "2", Name = "P2", Email = "p2@p2.me"},
-            new POCO {Id = "3", Name = "P3", Email = "p3@p3.me"},
+            new CustomerPOCO { CustomerId = "c1", Name = "C1", Email = "c1@c1.me", Url="https://www.customer1.com"},
+            new CustomerPOCO { CustomerId = "c2", Name = "C2", Email = "c2@c2.me", Url="https://www.customer2.com"},
+            new CustomerPOCO { CustomerId = "c3", Name = "C3", Email = "c3@c3.me", Url="https://www.customer3.com"},
         };
 
-        public static List<POCO> listeners = new List<POCO>
-        {
-            new POCO {Id = "1-1"},
-            new POCO {Id = "2-1"},
-            new POCO {Id = "3-1"},
-        };
+        public static List<MessagePOCO> Messages = new List<MessagePOCO>();
+
 
         static void Main(string[] args)
         {
-            foreach (var message in messages)
+            foreach (var customer in Customers)
             {
-                BuildMessaging(out MessagingFloomeen master, message);
 
-                var listener = listeners.First(l => l.Id == message.Id + "-1");
+                PlugFlipperFloomeen(out FlipperFloomeen flipperSlave, customer);
 
-                BuildListener(out ListenerFloomeen slave, listener);
+                var message = Messages.FirstOrDefault( m => m.MessageId == MessageId(customer.CustomerId)) ??
+                    
+                              new MessagePOCO {MessageId = MessageId(customer.CustomerId) };
 
-                var coordinator = new MessagingListenerFloomeensCoordinator(master, slave);
+                var email = MessageToSend(customer);
 
-                // ----------------------------------------------------------------
+                PlugMessagingFloomeen(out MessagingFloomeen messagingMaster, message, email);
+                
+                var coordinator = new MessagingFlipperCoordinator(messagingMaster, flipperSlave);
 
-                Console.WriteLine($"Before {listener.Id} {slave.CurrentState}");
+                Console.WriteLine("==========================================");
 
-                master.Execute(MessagingFloomeen.Command.Send);
+                Console.WriteLine($"[Before] Customer {customer.CustomerId} is '{ flipperSlave.CurrentState }'");
 
-                master.Execute(MessagingFloomeen.Command.Send);
+                messagingMaster.Execute(MessagingFloomeen.Command.Send);
 
-                master.Unbind();
+                Console.WriteLine($"[After] Customer {customer.CustomerId} is '{ flipperSlave.CurrentState }'");
 
-                Console.WriteLine($"After {listener.Id} {slave.CurrentState}");
+                messagingMaster.Unbind();
 
+                flipperSlave.Unbind();
+
+                Console.WriteLine("==========================================");
             }
 
-             Console.ReadKey();
+            Console.ReadKey();
 
         }
 
-        static void BuildListener(out ListenerFloomeen listener, POCO poco)
+        public static string MessageId(string customerId)
         {
-            listener = new ListenerFloomeen();
-
-            listener.Plug(poco);
+            return $"{customerId}_M";
         }
 
-        static void BuildMessaging(out MessagingFloomeen Floomeen, POCO poco)
+        static void PlugFlipperFloomeen(out FlipperFloomeen flipper, IFellow customer)
         {
-            var messageToSend = new FlooMessage
+            flipper = new FlipperFloomeen();
+
+            flipper.Plug(customer);
+        }
+
+        static void PlugMessagingFloomeen(out MessagingFloomeen floomeen, MessagePOCO message, FlooMessage email)
+        {
+            floomeen = new MessagingFloomeen();
+
+            floomeen.InjectAdapter<EmailAdapter>();
+
+            floomeen.AddContextData(MessagingFloomeen.ContextKey.Message, email);
+
+            floomeen.AddContextData(MessagingFloomeen.ContextKey.MaxRetries, new FlooInt(3));
+
+            floomeen.Plug(message);
+        }
+
+        static FlooMessage MessageToSend(CustomerPOCO customer)
+        {
+            return new FlooMessage
             {
-                To = poco.Email,
+                To = customer.Email,
 
-                Content = string.Format(MessageTemplate, poco.Name, poco.Url)
+                From = "system@example.com",
+
+                Content = string.Format(MessageTemplate, customer.Name, customer.Url),
+
+                Type = SupportedTypes.Email
             };
-
-            var maxretries = new FlooInt(3);
-
-            //var machine = Factory.Create("Floomeen.Showroom.MessagingFloomeen");
-            Floomeen = new MessagingFloomeen();
-
-            Floomeen.InjectAdapter<SendgridAdapter>();
-
-            Floomeen.AddContextData(MessagingFloomeen.ContextKey.Message, messageToSend);
-
-            Floomeen.AddContextData(MessagingFloomeen.ContextKey.MaxRetries, maxretries);
-
-            Floomeen.Plug(poco);
         }
     }
 }

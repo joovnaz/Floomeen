@@ -1,9 +1,9 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
-namespace ConsoleWithConnectedMines
+namespace SimpleExample
 {
-    public class SendgridAdapter : IMessageSenderAdapter
+    public class EmailAdapter : IMessageSenderAdapter
     {
         public string[] AcceptedTypes()
         {
@@ -15,9 +15,13 @@ namespace ConsoleWithConnectedMines
 
         public Result Send(FlooMessage message)
         {
-            System.Console.WriteLine($"Sending Message (SENDGRID) =======");
+            System.Console.WriteLine($"Sending Message ({message.Type}) =======");
 
-            System.Console.WriteLine($"Message: {MessageToString(message)}");
+            System.Console.WriteLine($"_");
+
+            System.Console.WriteLine($"{MessageToString(message)}");
+
+            System.Console.WriteLine($"_");
 
             System.Console.WriteLine($"==================================");
 
@@ -32,7 +36,7 @@ namespace ConsoleWithConnectedMines
             return $"From: {message.FromAlias} [{message.From}]\r\n" +
                    $"To: {message.ToAlias} [{message.To}]\r\n" +
                    $"Content:-----------------------\r\n" +
-                   $"{message.Content}" +
+                   $"{message.Content}\r\n" +
                    $"--------------------------------\r\n";
         }
     }

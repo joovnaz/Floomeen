@@ -2,7 +2,7 @@
 using Floomeen.Attributes;
 using Floomeen.Meen.Interfaces;
 
-namespace Console
+namespace SimpleExample
 {
     public class POCO : IFellow
     {

@@ -4,16 +4,17 @@ using Floomeen.Meen.Events;
 
 namespace Showroom
 {
-    public class MessagingListenerFloomeensCoordinator : CoordinatorBase<MessagingFloomeen, ListenerFloomeen>
+    public class MessagingFlipperCoordinator : CoordinatorBase<MessagingFloomeen, FlipperFloomeen>
     {
-        public MessagingListenerFloomeensCoordinator(MessagingFloomeen m, ListenerFloomeen s)  : base(m, s)
+        private readonly string FlipCommand = FlipperFloomeen.Command.Flip;
+
+        public MessagingFlipperCoordinator(MessagingFloomeen m, FlipperFloomeen s)  : base(m, s)
         {
             OnEvent<ChangedStateEvent>((@event, master, slave) => 
             {
-
                 if (!MachinesAreCompatible(master, slave)) return false;
 
-                slave.Execute(ListenerFloomeen.Command.Change);
+                slave.Execute(FlipCommand);
 
                 return true;
 
@@ -21,14 +22,14 @@ namespace Showroom
             
             OnEvent<ExitedStateEvent>((@event, master, slave) =>
             {
-                Console.WriteLine($"[*] ExitState {@event.State} from Id={@event.Id.ToString()}");
+                Console.WriteLine($"[COORDINATOR] Event '{@event.State}' received from Id={@event.Id.ToString()}");
                 
                 return true;
             });
 
             OnEvent<EnteredStateEvent>((@event, master, slave) =>
             {
-                Console.WriteLine($"[*] EnterState {@event.State} from Id={@event.Id.ToString()}");
+                Console.WriteLine($"[COORDINATOR] Event '{@event.State}' received from Id={@event.Id.ToString()}");
 
                 return true;
             });
@@ -38,7 +39,8 @@ namespace Showroom
         {
             return 
                    master.BoundFellow.State == MessagingFloomeen.State.Retrying &&
-                   slave.BoundFellow.State == ListenerFloomeen.State.Unchanged;
+
+                   slave.BoundFellow.State == FlipperFloomeen.State.Unchanged;
         }
 
     }

@@ -33,8 +33,6 @@ namespace Floomeen.Meen
         {
             this.Subscribe<TEvent>(@event =>
             {
-                Console.WriteLine($">> {@event}");
-
                 if (!IsRightForMe(@event)) return;
 
                 if (handler(@event, MasterFloomeen, SlaveFloomeen))

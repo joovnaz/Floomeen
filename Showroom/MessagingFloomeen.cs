@@ -72,8 +72,6 @@ namespace Showroom
 
         }
 
-
-
         public Result SendEmail(Context context)
         {
             var messageAdapter = SelectAdapter<IMessageSenderAdapter>(AdapterAcceptedType);
@@ -113,12 +111,12 @@ namespace Showroom
 
         public void ManageOnEnterEvent(Context context)
         {
-            Console.WriteLine($"Entered [State={context.State}]");
+            //Console.WriteLine($"Entered [State={context.State}]");
         }
 
         public void ManageOnExitEvent(Context context)
         {
-            Console.WriteLine($"Exited [State={context.State}]");
+            //Console.WriteLine($"Exited [State={context.State}]");
         }
     }
 }
