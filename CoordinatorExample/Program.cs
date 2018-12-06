@@ -16,8 +16,6 @@ namespace CoordinatorExample
         public static List<CustomerPOCO> Customers = new List<CustomerPOCO>
         {
             new CustomerPOCO { CustomerId = "c1", Name = "C1", Email = "c1@c1.me", Url="https://www.customer1.com"},
-            new CustomerPOCO { CustomerId = "c2", Name = "C2", Email = "c2@c2.me", Url="https://www.customer2.com"},
-            new CustomerPOCO { CustomerId = "c3", Name = "C3", Email = "c3@c3.me", Url="https://www.customer3.com"},
         };
 
         public static List<MessagePOCO> Messages = new List<MessagePOCO>();

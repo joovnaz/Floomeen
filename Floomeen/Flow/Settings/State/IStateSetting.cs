@@ -2,11 +2,11 @@
 {
     public interface IStateSetting
     {
-        IStateEvent Then();
+        IStateSettingEvent Then();
 
-        IStateEvent IsStartState();
+        IStateSettingEvent IsStartState();
 
-        IStateEvent IsEndState();
+        IStateSettingEvent IsEndState();
 
     }
 }

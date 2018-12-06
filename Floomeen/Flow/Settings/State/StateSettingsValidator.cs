@@ -8,14 +8,14 @@ namespace Floomeen.Flow.Settings.State
     {
         private readonly string _machineName;
 
-        private List<StateSetting> StateSettings { get; }
+        private List<StateSettingSetting> StateSettings { get; }
 
 
         public StateSettingsValidator(string machineName)
         {
             _machineName = machineName;
 
-            StateSettings = new List<StateSetting>();
+            StateSettings = new List<StateSettingSetting>();
         }
 
         public string StartState()
@@ -38,27 +38,27 @@ namespace Floomeen.Flow.Settings.State
                 RaiseException("UndefinedStartState");
         }
 
-        private void CheckSetting(StateSetting stateSetting, List<string> fromStates, List<string> toStates)
+        private void CheckSetting(StateSettingSetting stateSettingSetting, List<string> fromStates, List<string> toStates)
         {
-            if (string.IsNullOrEmpty(stateSetting.State))
+            if (string.IsNullOrEmpty(stateSettingSetting.State))
 
                 RaiseException("InvalidState");
 
-            if (stateSetting.IsStart && !fromStates.Contains(stateSetting.State))
+            if (stateSettingSetting.IsStart && !fromStates.Contains(stateSettingSetting.State))
 
                 RaiseException("InvalidSettingStartStateNotPresentInAnyRule");
 
-            if (stateSetting.IsEnd && !toStates.Contains(stateSetting.State))
+            if (stateSettingSetting.IsEnd && !toStates.Contains(stateSettingSetting.State))
 
                 RaiseException("InvalidSettingEndStateNotPresentInAnyRule");
         }
 
-        public void Add(StateSetting stateSetting)
+        public void Add(StateSettingSetting stateSettingSetting)
         {
-            StateSettings.Add(stateSetting);
+            StateSettings.Add(stateSettingSetting);
         }
 
-        public StateSetting RetrieveSetting(string state)
+        public StateSettingSetting RetrieveSetting(string state)
         {
             return StateSettings.FirstOrDefault(r => r.State == state);
         }

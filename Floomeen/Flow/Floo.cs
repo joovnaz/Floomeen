@@ -48,7 +48,7 @@ namespace Floomeen.Flow
 
         public IStateSetting AddStateSetting(string state)
         {
-            var stateSetting = new StateSetting(state);
+            var stateSetting = new StateSettingSetting(state);
 
             _stateSettingsValidator.Add(stateSetting);
 
@@ -98,7 +98,7 @@ namespace Floomeen.Flow
             return _rulesValidator.RetrieveApplicableRule(state, command);
         }
 
-        public StateSetting RetrieveSetting(string state)
+        public StateSettingSetting RetrieveSetting(string state)
         {
             return _stateSettingsValidator.RetrieveSetting(state);
         }

@@ -4,7 +4,7 @@ using Floomeen.Meen;
 
 namespace Floomeen.Flow.Settings.State
 {
-    public class StateSetting : IStateSetting, IStateEvent
+    public class StateSettingSetting : IStateSetting, IStateSettingEvent
     {
         public string State { get; private set; }
 
@@ -16,17 +16,17 @@ namespace Floomeen.Flow.Settings.State
 
         public Action<Context> OnExitEventHandler { get; private set; }
 
-        public StateSetting(string state)
+        public StateSettingSetting(string state)
         {
             State = state;
         }
 
-        public IStateEvent Then()
+        public IStateSettingEvent Then()
         {
             return this;
         }
 
-        public IStateEvent IsStartState()
+        public IStateSettingEvent IsStartState()
         {
             if (IsEnd) throw new FloomeenException("ElementAlreadySet");
 
@@ -35,7 +35,7 @@ namespace Floomeen.Flow.Settings.State
             return this;
         }
 
-        public IStateEvent IsEndState()
+        public IStateSettingEvent IsEndState()
         {
             if (IsStart) throw new FloomeenException("ElementAlreadySet");
 
@@ -44,14 +44,14 @@ namespace Floomeen.Flow.Settings.State
             return this;
         }
 
-        public IStateEvent OnEnterEvent(Action<Context> handler)
+        public IStateSettingEvent OnEnterEvent(Action<Context> handler)
         {
             OnEnterEventHandler = handler;
 
             return this;
         }
 
-        public IStateEvent OnExitEvent(Action<Context> handler)
+        public IStateSettingEvent OnExitEvent(Action<Context> handler)
         {
             OnExitEventHandler = handler;
 
