@@ -345,11 +345,10 @@ For example, we could be interested in changing a customer status, e.g. from ina
 In such scenario, when `CustomerOrderFloomeen` (master) change state into `Delivered`, the coordinator is responsible to change state of related customer.
 This involve the implementation of a `CustomerFloomeen` (slave) to manage customer state and a coordinator able to capture `ChangeStatEvents` and execute command on slave Floomeen accordingly.
 
-Have a look to CoordinatorExample project for a complete implementation.
+Have a look to **CoordinatorExample** project for a complete implementation.
 
+## Showroom
 
-## More Examples
-
-Find more examples on [Github project](https://github.com/joovnaz/Floomeen).
+Find more examples in Shoowroom folder in [Floomeen Github](https://github.com/joovnaz/Floomeen).
 
 
