@@ -1,7 +1,7 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
-namespace CoordinatorExample
+namespace Showroom.Adapters
 {
     public class EmailAdapter : IMessageSenderAdapter
     {

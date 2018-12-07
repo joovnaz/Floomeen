@@ -12,7 +12,7 @@ namespace Showroom
         {
             OnEvent<ChangedStateEvent>((@event, master, slave) => 
             {
-                if (!MachinesAreCompatible(master, slave)) return false;
+                if (!FellowStatesAreCompatible(master.BoundFellow, slave.BoundFellow)) return false;
 
                 slave.Execute(FlipCommand);
 
@@ -22,25 +22,25 @@ namespace Showroom
             
             OnEvent<ExitedStateEvent>((@event, master, slave) =>
             {
-                Console.WriteLine($"[COORDINATOR] Event '{@event.State}' received from Id={@event.Id.ToString()}");
+                Console.WriteLine($"[COORDINATOR] ExitedStateEvent '{@event.State}' received from message Id='{@event.Id.ToString()}'");
                 
                 return true;
             });
 
             OnEvent<EnteredStateEvent>((@event, master, slave) =>
             {
-                Console.WriteLine($"[COORDINATOR] Event '{@event.State}' received from Id={@event.Id.ToString()}");
+                Console.WriteLine($"[COORDINATOR] EnteredStateEvent '{@event.State}' received from message Id='{@event.Id.ToString()}'");
 
                 return true;
             });
         }
 
-        private static bool MachinesAreCompatible(MeenBase master, MeenBase slave)
+        private static bool FellowStatesAreCompatible(Fellow master, Fellow slave)
         {
             return 
-                   master.BoundFellow.State == MessagingFloomeen.State.Retrying &&
+                   master.State == MessagingFloomeen.State.Retrying &&
 
-                   slave.BoundFellow.State == FlipperFloomeen.State.Unchanged;
+                   slave.State == FlipperFloomeen.State.Unchanged;
         }
 
     }

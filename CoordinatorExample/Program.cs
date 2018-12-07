@@ -6,12 +6,15 @@ using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 using Floomeen.Meen.Interfaces;
 using Showroom;
+using Showroom.Adapters;
 
 namespace CoordinatorExample
 {
     class Program
     {
         public static string MessageTemplate = "Dear {0}, <br/> please get in contact with us by clicking on <a href=\"{1}\">this link</a>";
+
+        public static readonly string Send = MessagingFloomeen.Command.Send;
 
         public static List<CustomerPOCO> Customers = new List<CustomerPOCO>
         {
@@ -25,26 +28,15 @@ namespace CoordinatorExample
         {
             foreach (var customer in Customers)
             {
-
-                PlugFlipperFloomeen(out FlipperFloomeen flipperSlave, customer);
-
-                var message = Messages.FirstOrDefault( m => m.MessageId == MessageId(customer.CustomerId)) ??
-                    
-                              new MessagePOCO {MessageId = MessageId(customer.CustomerId) };
-
-                var email = MessageToSend(customer);
-
-                PlugMessagingFloomeen(out MessagingFloomeen messagingMaster, message, email);
-                
-                var coordinator = new MessagingFlipperCoordinator(messagingMaster, flipperSlave);
+                Setup(customer, out MessagingFloomeen messagingMaster, out FlipperFloomeen flipperSlave);
 
                 Console.WriteLine("==========================================");
 
-                Console.WriteLine($"[Before] Customer {customer.CustomerId} is '{ flipperSlave.CurrentState }'");
+                Console.WriteLine($"[BeforeCommand] Customer '{customer.CustomerId}' has state '{ flipperSlave.CurrentState }'");
 
-                messagingMaster.Execute(MessagingFloomeen.Command.Send);
+                messagingMaster.Execute(Send);
 
-                Console.WriteLine($"[After] Customer {customer.CustomerId} is '{ flipperSlave.CurrentState }'");
+                Console.WriteLine($"[AfterCommand] Customer '{customer.CustomerId}' has state '{ flipperSlave.CurrentState }'");
 
                 messagingMaster.Unbind();
 
@@ -56,10 +48,30 @@ namespace CoordinatorExample
             Console.ReadKey();
 
         }
+        
+
+        public static void Setup(CustomerPOCO customer, out MessagingFloomeen master, out FlipperFloomeen slave)
+        {
+            PlugFlipperFloomeen(out FlipperFloomeen flipperSlave, customer);
+
+            slave = flipperSlave;
+
+            var message = Messages.FirstOrDefault(m => m.MessageId == MessageId(customer.CustomerId)) ??
+
+                          new MessagePOCO { MessageId = MessageId(customer.CustomerId) };
+
+            var email = MessageToSend(customer);
+
+            PlugMessagingFloomeen(out MessagingFloomeen messagingMaster, message, email);
+
+            master = messagingMaster;
+
+            var coordinator = new MessagingFlipperCoordinator(messagingMaster, flipperSlave);
+        }
 
         public static string MessageId(string customerId)
         {
-            return $"{customerId}_M";
+            return $"{customerId}_message";
         }
 
         static void PlugFlipperFloomeen(out FlipperFloomeen flipper, IFellow customer)
