@@ -88,7 +88,7 @@ For example, if our switcher starts at `On` state:
         .IsStartState();
 ```
 
-## The `SwitcherFloomeen`
+## The `SwitcherFloomeen` Class
 
 The switcher in our example becomes `SwitcherFloomeen` class. As said following a simple workflow:
 
@@ -156,7 +156,7 @@ To persist state, Floomeen can use any generic POCO (Plain Old CLR Object) class
 Any POCO classes can get the job done, provided it can be enriched by few Floomeen attributes. 
 Let's see how it works.
 
-## The `CustomerOrderFloomeen`
+## The `CustomerOrderFloomeen` Class
 
 As second example, imagine an existing customers order management application implementing a `CustomerOrder` class. 
 Something like:
@@ -233,7 +233,7 @@ public class CustomerOrderFloomeen : MeenBase {
 
 ```
 
-### From POCO class to Fellow
+### From POCO class to Fellow: aliasing properties
 
 Adding two attributes to the POCO class (used to store customer order data) allow Floomeen to map its internal state:
 
@@ -261,7 +261,8 @@ public class CustomerOrder : IFellow
 ```
 
 The attributes `[FloomeenId]` and `[FloomeenState]` allow Floomine to map the customer order unique identifaction and its state during the entire workflow.
-In our case, both are mapped to existing properties of the POCO class.
+In our case, both are mapped to existing properties of the POCO class. 
+We also say that `OrderStatus` and `CustomerOrderId` are State and Id aliased-properties.
 
 The interface IFellow (an empty interface) allows Floomeen to manage persistency through `IFellow` interface.
 
@@ -275,9 +276,9 @@ Finally, the `CustomerOrderFloomeen` is ready to run, after a simple setup proce
 			...
 	};
 
-	var orderMeen = Factory<CustomerOrderFloomeen>.Create();
+	var machine = Factory<CustomerOrderFloomeen>.Create();
 
-	orderMeen.Plug(customerOrder)
+	machine.Plug(customerOrder)
 
 	...
 ```
@@ -288,9 +289,27 @@ An empty or null `[FloomeenId]` attributed property (i.e. `CustomerOrderId` in o
 Object unique identification is required by master-slave Floomeen configurations, where internal events are subscribed to align master and slave workflows. 
 This is an advanced topic covered later.
 
+### Plugging vs Binding 
+
+When we connect the machine to state capabale POCO class (i.e. a Fellow) for the first time we use "plug" operation. 
+Plugging requires Fellow aliased-properties to be null or empty, to allow the machine to "plug" their content (e.g. start state).
+
+When we connect the machine to an existing Fellow, then we use a "bind" operation. Binding implies Flooming to check for Fellow aliased-attributes validty (e.g. state or machine if used).
+In the last case:
+
+```
+	...
+
+	var machine = Factory<CustomerOrderFloomeen>.Create();
+
+	machine.Bind(oldCustomerOrder)
+
+	...
+```
+
 ### Further Floomine Attributes
 
-Floomeen can use the following further optional attributes to map useful properties:
+Floomeen can use the following optional attributes to map further properties:
 
 * `[FloomineStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details) to extend state data;
 * `[FloomineMachine]`: map Floomine class type name, to make sure that each entity is uniquely tight to a specific Floomine (e.g. "Mynamespace.Mymachines.CustomerOrderFloomine" );
@@ -315,6 +334,19 @@ The above code shows a first message: `Customer Order [xxxx-xxxx] state is 'Ship
 Naturally executing any command not declared by Floomine workflow would raise an exception.
 At any time, you can query the machine to obtain a list of available commands, 
 in our case a second message shows: `Available commands: 'Hand'`, only `Hand` command is in fact available from state `Shipping`.
+
+## Adapters and Coordinators
+
+Floomine use adapters to exchange information with external parties. An example is represented by email gateways.
+Have a look to **SimpleExample** project for a complete implementation.
+
+Floomine use coordinators to create master-slave configurations between two machines. 
+For example, we could be interested in changing a customer status, e.g. from inactive to active, when a customer order is delivered. 
+In such scenario, when `CustomerOrderFloomeen` (master) change state into `Delivered`, the coordinator is responsible to change state of related customer.
+This involve the implementation of a `CustomerFloomeen` (slave) to manage customer state and a coordinator able to capture `ChangeStatEvents` and execute command on slave Floomeen accordingly.
+
+Have a look to CoordinatorExample project for a complete implementation.
+
 
 ## More Examples
 
