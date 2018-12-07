@@ -63,43 +63,41 @@ For our switcher: `SwitchOn` would change the switcher from off to on, whilst `S
 Floomeen code would be:
 
 ```
-    Floo.AddTransition("SwitchOnTransition")
+    Flow.AddTransition("SwitchOnTransition")
         .From(State.Off)
         .On(Command.SwitchOn)
         .GoTo(State.On);
 
-    Floo.AddTransition("SwitchOffTransition")
+    Flow.AddTransition("SwitchOffTransition")
         .From(State.On)
         .On(Command.SwitchOff)
         .GoTo(State.Off);
 
 ```
 
-Easy, no?  Well... you will discover more about `Floo` /fluː/ object later on.
+Easy, no?  Well... you will discover more about `Flow` /fluː/ object later on.
 
 ### Settings
 
-In Floomeen a `Setting` is a configuration of a `State` or `Command`.
+In Floomeen a `Setting` is a configuration of a `State` or `Command`. Current release support state settings only.
 Floomeen utilize a fluent API to describe settings. 
-For example, if our switcher is created on an `On` as start state, we would code is as:
+For example, if our switcher starts at `On` state:
 
 ```
-    Flow.AddSetting(State.On)
+    Flow.AddStateSetting(State.On)
         .IsStartState();
 ```
 
 ## The `SwitcherFloomeen`
 
-The switcher in our example not become the `SwitcherFloomeen`. 
-As said following a simple workflow:
+The switcher in our example becomes `SwitcherFloomeen` class. As said following a simple workflow:
 
 1. Start at Off state;
 1. In Off state, on receiving a SwitchOn command goto On state;
 1. In On state, on receiving a SwitchOff command goto Off state;
 
-The `SwitcherFloomeen` workflow above is made of 2 transitions (2 and 3) and  
-a machine setting (1).
-Clearly transitions are always more complex, but relax a second because complexity is coming soon.
+The `SwitcherFloomeen` workflow above is made of 2 transitions (2 and 3) and a state setting (1).
+Clearly transitions are usually more complex, but complexity is coming soon.
 
 Let's put all things together: 
 
@@ -122,46 +120,46 @@ Let's put all things together:
 
         public SwitcherFloomeen ()
         {
-            Flow.AddSetting(State.Off)
+            Flow.AddStateSetting(State.On)
               .IsStartState();
 
             Flow.AddTransition("SwitchOnTransition")
                 .From(State.Off)
                 .On(Command.SwitchOn)
-                .GoTo(State.On);
+					.GoTo(State.On);
 
             Flow.AddTransition("SwitchOffTransition")
                 .From(State.On)
                 .On(Command.SwitchOff)
-                .GoTo(State.Off);
+					.GoTo(State.Off);
 
         }
     }
 ```
-Notice that in Floomeen any machine (FSM) extends the `MeenBase` class, where core logic lives.
-Without exceptions our `SwitcherFloomeen` extends a `MeenBase` class. 
+Notice that in Floomeen any state machine extends `MeenBase` class, where core logic lives.
 
 Notice also the `Flow` object referenced in class constructor, is used to create the machine workflow through fluent API. 
 Using an advanced code editor (like Visual Studio) you can write rules with great code-completion support (strongly recommended).
-The `Floo` object smoothly allows to define settings and transitions. 
+`Floow` objects smoothly allows to define settings and transitions. 
 Later we will go thorough more complex transitions.
 
-You might find helpful to describe a rule by passing `AddTransition` argument, 
-such as `"SwitchOffTransition"` or `"Whatever this transition does!"`.  
+You might find helpful to put a description of rule intent passing a free string to `AddTransition` argument, 
+such as `"SwitchOffTransition"` or `"Whatever this transition purpose is!"`.  
 
-Our `SwitcherFloomeen` was born. Now what?  
+Our `SwitcherFloomeen` is born. Now what?  
 
-Before moving on we need to introduce Floomeen persistency mechanism, i.e. how states are peristed, or an entity to make machine states persistent over time.
+Before moving on, we need to introduce Floomeen persistence mechanisms, i.e. how Floomine state s peristed over time.
 
 ### Persisting State: POCO Classes and Floomeen Attributes
 
 To persist state, Floomeen can use any generic POCO (Plain Old CLR Object) class (see [POCO Classes](https://www.c-sharpcorner.com/UploadFile/5d065a/poco-classes-in-entity-framework/)). 
-Any POCO classes can get the job done, provided can be enriched with few Floomeen attributes. 
+Any POCO classes can get the job done, provided it can be enriched by few Floomeen attributes. 
 Let's see how it works.
 
 ## The `CustomerOrderFloomeen`
 
-As second example, imagine a customers order management application using a `CustomerOrder` class, something like:
+As second example, imagine an existing customers order management application implementing a `CustomerOrder` class. 
+Something like:
 
 ```
 public class CustomerOrder {
@@ -181,15 +179,16 @@ public class CustomerOrder {
 }
 ```
 
-Naturally this is a greatly simplified data model of course. Here `CustomerOrderId` property represents a unique key of our order, 
+Naturally this is a greatly simplified data model of course.
+Here `CustomerOrderId` property represents the unique key of our order, 
 and `CustomerId` is a foreign key to Customer entity. A `Customer` has one-or-more `CustomerOrders`.
 
 Clearly, our order will own a state (right?) here stored by the `OrderStatus` property. So far so good.
 
 Imagine also our customers order going through three simple states: `New`, `Shipping` and `Delivered`.
-When the order is firstly created in the system its state become `New`, waiting to get shipped. 
-After cargo, while on the jorney to arrive at Customer location, the state of the order is `Shipping`. 
-Finally, order status will be `Delivered` right after the customer signature.
+When the order is firstly created in the system its state is `New`, waiting to get shipped. 
+After cargo, while on the jorney to arrive at Customer premise, state of the order is `Shipping`. 
+Finally, order state is `Delivered` right after a customer signature.
 
 This how our `CustomerOrderFloomeen` would look like:
 
@@ -212,10 +211,10 @@ public class CustomerOrderFloomeen : MeenBase {
 
         public CustomerOrderFloomeen()
         {
-            Flow.AddSetting(State.New)
+            Flow.AddStateSetting(State.New)
                 .IsStartState();
 
-            Flow.AddSetting(State.Delivered)
+            Flow.AddStateSetting(State.Delivered)
                 .IsEndState();
             
             Flow.AddTransition("CargoTransition")
@@ -264,9 +263,9 @@ public class CustomerOrder : IFellow
 The attributes `[FloomeenId]` and `[FloomeenState]` allow Floomine to map the customer order unique identifaction and its state during the entire workflow.
 In our case, both are mapped to existing properties of the POCO class.
 
-The interface IFellow (a trivial empty interface) allows Floomeen to manage persistency by `IFellow` interface.
+The interface IFellow (an empty interface) allows Floomeen to manage persistency through `IFellow` interface.
 
-Finally, the `CustomerOrderFloomeen` is ready to after a simple setup process:
+Finally, the `CustomerOrderFloomeen` is ready to run, after a simple setup process:
 
 ```
 	...
@@ -276,7 +275,7 @@ Finally, the `CustomerOrderFloomeen` is ready to after a simple setup process:
 			...
 	};
 
-	var machine = new CustomerOrderFloomeen();
+	var machine = Factory CustomerOrderFloomeen();
 
 	machine.Plug(customerOrder)
 

@@ -105,7 +105,7 @@ namespace Floomeen.Meen
 
             BoundFellow.CheckMachineType();
 
-            Flow.IsExistingState(BoundFellow.State);
+            Flow.StatesContains(BoundFellow.State);
         }
 
         public void Unbind()

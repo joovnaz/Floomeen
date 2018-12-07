@@ -76,14 +76,14 @@ namespace CoordinatorExample
 
         static void PlugFlipperFloomeen(out FlipperFloomeen flipper, IFellow customer)
         {
-            flipper = new FlipperFloomeen();
+            flipper = Factory<FlipperFloomeen>.Create();
 
             flipper.Plug(customer);
         }
 
         static void PlugMessagingFloomeen(out MessagingFloomeen floomeen, MessagePOCO message, FlooMessage email)
         {
-            floomeen = new MessagingFloomeen();
+            floomeen = Factory<MessagingFloomeen>.Create();
 
             floomeen.InjectAdapter<EmailAdapter>();
 

@@ -80,7 +80,7 @@ namespace Floomeen.Flow
             }
         }
         
-        public bool IsExistingState(string state)
+        public bool StatesContains(string state)
         {
             return _rulesValidator.IsExistingState(state);
         }
