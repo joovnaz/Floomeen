@@ -126,12 +126,12 @@ Let's put all things together:
             Flow.AddTransition("SwitchOnTransition")
                 .From(State.Off)
                 .On(Command.SwitchOn)
-					.GoTo(State.On);
+				.GoTo(State.On);
 
             Flow.AddTransition("SwitchOffTransition")
                 .From(State.On)
                 .On(Command.SwitchOff)
-					.GoTo(State.Off);
+				.GoTo(State.Off);
 
         }
     }
@@ -316,8 +316,8 @@ Naturally executing any command not declared by Floomine workflow would raise an
 At any time, you can query the machine to obtain a list of available commands, 
 in our case a second message shows: `Available commands: 'Hand'`, only `Hand` command is in fact available from state `Shipping`.
 
-## More Example
+## More Examples
 
-Find more example on 
+Find more examples on [Github project](https://github.com/joovnaz/Floomeen).
 
 
