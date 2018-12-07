@@ -6,8 +6,6 @@
 
         public static readonly string Sms = "Sms";
 
-        public static readonly string Twitter = "Twitter";
-
-        public static readonly string Whatsapp = "Whatsapp";
+        public static readonly string InstantMessage = "InstantMessage";
     }
 }
