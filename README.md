@@ -9,7 +9,7 @@ From Nuget Package Manager:
 ``` 
 PM> Install-Package Floomeen 
 ``` 
-or from Nuget by searching for Floomeen.
+or directly on Nuget.org by searching for [Floomeen](https://www.nuget.org/packages?q=Floomeen).
 
 ## Definitions
 
