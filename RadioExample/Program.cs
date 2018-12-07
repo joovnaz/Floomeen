@@ -7,7 +7,7 @@ namespace RadioExample
     class Program
     {
 
-        private string[] Commands = {
+        private static string[] Commands = {
 
             RadioFloomeen.Command.Play,
             RadioFloomeen.Command.Stop,
@@ -30,9 +30,24 @@ namespace RadioExample
 
             radio.Plug(poco);
 
-            Console.WriteLine($"Start State '{radio.CurrentState}'");
 
-            Console.ReadKey();
+            foreach (var command in Commands)
+            {
+                Console.WriteLine($"===============================");
+
+                Console.WriteLine($"State '{radio.CurrentState}'");
+
+                Console.WriteLine($"Available Commands [{string.Join(",", radio.AvailableCommands())}]");
+
+                Console.WriteLine($"Executing {command}");
+
+                Console.ReadKey();
+
+                radio.Execute(command);
+
+            }
+
+
         }
     }
 }

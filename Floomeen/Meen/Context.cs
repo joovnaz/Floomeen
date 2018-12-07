@@ -4,6 +4,8 @@
     {
         public string State { get; set; }
 
+        public string PreviousState { get; set; }
+
         public ContextInfo StateData { get; set; }
 
         public string Command { get; set; }

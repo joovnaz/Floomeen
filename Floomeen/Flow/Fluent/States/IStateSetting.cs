@@ -1,4 +1,4 @@
-﻿namespace Floomeen.Flow.Settings.State
+﻿namespace Floomeen.Flow.Fluent.States
 {
     public interface IStateSetting
     {
@@ -7,6 +7,5 @@
         IStateSettingEvent IsStartState();
 
         IStateSettingEvent IsEndState();
-
     }
 }

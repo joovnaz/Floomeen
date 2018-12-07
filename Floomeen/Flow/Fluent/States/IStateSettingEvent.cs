@@ -1,7 +1,7 @@
 ﻿using System;
 using Floomeen.Meen;
 
-namespace Floomeen.Flow.Settings.State
+namespace Floomeen.Flow.Fluent.States
 {
     public interface IStateSettingEvent
     {

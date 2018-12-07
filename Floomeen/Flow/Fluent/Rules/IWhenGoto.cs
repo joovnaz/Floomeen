@@ -1,6 +1,6 @@
-﻿namespace Floomeen.Flow.Fluent
+﻿namespace Floomeen.Flow.Fluent.Rules
 {
-    public interface IIfGoto
+    public interface IWhenGoto
     {
         IConditional GoTo(string state);
 

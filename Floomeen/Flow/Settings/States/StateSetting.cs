@@ -1,12 +1,13 @@
 ﻿using System;
 using Floomeen.Exceptions;
+using Floomeen.Flow.Fluent.States;
 using Floomeen.Meen;
 
-namespace Floomeen.Flow.Settings.State
+namespace Floomeen.Flow.Settings.States
 {
-    public class StateSettingSetting : IStateSetting, IStateSettingEvent
+    public class StateSetting : IStateSetting, IStateSettingEvent
     {
-        public string State { get; private set; }
+        public string State { get; }
 
         public bool IsStart { get; private set; }
 
@@ -16,10 +17,12 @@ namespace Floomeen.Flow.Settings.State
 
         public Action<Context> OnExitEventHandler { get; private set; }
 
-        public StateSettingSetting(string state)
+        public StateSetting(string state)
         {
             State = state;
         }
+
+        #region Fluent
 
         public IStateSettingEvent Then()
         {
@@ -57,5 +60,7 @@ namespace Floomeen.Flow.Settings.State
 
             return this;
         }
+        
+        #endregion
     }
 }

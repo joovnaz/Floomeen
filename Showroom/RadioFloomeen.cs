@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Floomeen.Meen;
 
 namespace Showroom
@@ -25,10 +26,20 @@ namespace Showroom
 
         public RadioFloomeen()
         {
+            Flow.AddStateSetting(State.StandBy).
+                IsStartState()
+                .OnEnterEvent(OnEnterAction)
+                .OnExitEvent(OnExitAction);
+
             Flow.AddStateSetting(State.Playing)
                 .Then()
-                    .OnEnterEvent(OnEnterAction)
-                    .OnExitEvent(OnEnterAction);
+                .OnEnterEvent(OnEnterAction)
+                .OnExitEvent(OnExitAction);
+
+            Flow.AddStateSetting(State.Paused)
+                .Then()
+                .OnEnterEvent(OnEnterAction)
+                .OnExitEvent(OnExitAction);
 
 
             Flow.AddTransition()
@@ -59,17 +70,17 @@ namespace Showroom
 
         public void OnExitAction(Context context)
         {
-            Log($"OnExit");
+            Log($"Exited State '{context.PreviousState}'");
         }
 
         public void OnEnterAction(Context context)
         {
-            Log($"OnEnter");
+            Log($"Entered State '{context.State}'");
         }
 
         public static void Log(string msg)
         {
-            Console.WriteLine(msg);
+            Console.WriteLine($"[RadioFloomeen] {msg}");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Floomeen.Flow.Fluent
+﻿namespace Floomeen.Flow.Fluent.Rules
 {
     public interface IFrom
     {

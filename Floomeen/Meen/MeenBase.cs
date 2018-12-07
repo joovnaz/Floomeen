@@ -3,6 +3,7 @@ using System.Linq;
 using Floomeen.Adapters;
 using Floomeen.Exceptions;
 using Floomeen.Flow;
+using Floomeen.Flow.Settings.Rules;
 using Floomeen.Meen.Events;
 using Floomeen.Meen.Interfaces;
 using Floomeen.Utils;
@@ -27,6 +28,8 @@ namespace Floomeen.Meen
         public bool IsBound => BoundFellow != null;
 
         public string CurrentState => BoundFellow?.State;
+
+        private string _previousState;
 
         private bool _isChecked = false;
 
@@ -83,7 +86,11 @@ namespace Floomeen.Meen
             if (BoundFellow.IsSet())
                 FloomeenException.Raise(_machineName, "CannotPlugFellowBecauseAlreadySet.TryBinding");
 
-            BoundFellow.Plug(_machineName, Flow.StartState());
+            var startState = Flow.StartState();
+
+            BoundFellow.Plug(_machineName, startState);
+
+            EnterNewState(startState, CreateContext());
         }
 
         public void Bind(IFellow fellow)
@@ -141,7 +148,7 @@ namespace Floomeen.Meen
 
             var result = rule.DoFunc.Invoke(context);
 
-            var conditions = rule.ConditionElements.Reverse();
+            var conditions = rule.Conditions.Reverse();
 
             foreach (var condition in conditions)
             {
@@ -161,6 +168,8 @@ namespace Floomeen.Meen
             BoundFellow.SerializeContextStateData();
 
             BoundFellow.State = toState;
+
+            _previousState = fromState;
 
             if (toState == fromState) return;
             
@@ -201,6 +210,8 @@ namespace Floomeen.Meen
                 Data = _contextData,
 
                 State = BoundFellow.State,
+
+                PreviousState = _previousState,
 
                 Command = _executingCommand,
 

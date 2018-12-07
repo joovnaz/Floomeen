@@ -2,7 +2,7 @@
 using System.Linq;
 using Floomeen.Exceptions;
 
-namespace Floomeen.Flow
+namespace Floomeen.Flow.Settings.Rules
 {
     public class RulesValidator
     {
@@ -37,11 +37,11 @@ namespace Floomeen.Flow
                 .Distinct()
                 .ToList();
 
-            var rulesWithCondition = Rules.Where(r => r.ConditionElements != null);
+            var rulesWithCondition = Rules.Where(r => r.Conditions != null);
 
             foreach (var rule in rulesWithCondition)
             {
-                var moreEndStates = rule.ConditionElements
+                var moreEndStates = rule.Conditions
                     .Where(c => !string.IsNullOrEmpty(c.EndState))
                     .Select(c => c.EndState)
                     .Distinct()
@@ -72,6 +72,11 @@ namespace Floomeen.Flow
             var filtered = Rules.Where(r => r.FromState == state);
 
             return filtered.Select(r => r.OnCommand).ToList();
+        }
+
+        public void AddRule(Rule rule)
+        {
+            Rules.Add(rule);
         }
 
         #endregion
@@ -106,11 +111,11 @@ namespace Floomeen.Flow
 
             if (IsAShortRuleWithEndState(rule)) return;
 
-            if (rule.ConditionElements == null)
+            if (rule.Conditions == null)
 
                 RaiseException($"MissingConditions [{rule.Rulename}]");
 
-            var conditions = rule.ConditionElements.ToList();
+            var conditions = rule.Conditions.ToList();
 
             if (conditions.Count == 0) RaiseException($"MissingConditions [{rule.Rulename}]");
 
@@ -124,7 +129,7 @@ namespace Floomeen.Flow
             return rule.ToState != null && rule.DoFunc == null;
         }
 
-        private bool ThereAreNullOrEmptyEndStatesIn(List<ConditionElement> elements)
+        private bool ThereAreNullOrEmptyEndStatesIn(List<Condition> elements)
         {
             return elements.Count(el => string.IsNullOrEmpty(el.EndState)) > 0;
         }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Floomeen.Exceptions;
-using Floomeen.Flow.Fluent;
-using Floomeen.Flow.Settings.State;
+using Floomeen.Flow.Fluent.Rules;
+using Floomeen.Flow.Fluent.States;
+using Floomeen.Flow.Settings.Rules;
+using Floomeen.Flow.Settings.States;
 
 namespace Floomeen.Flow
 {
@@ -39,18 +41,18 @@ namespace Floomeen.Flow
 
         public IFrom AddTransition(string rulename)
         {
-            var wfx = new Rule(rulename);
+            var rule = new Rule(rulename);
 
-            _rulesValidator.Rules.Add(wfx);
+            _rulesValidator.AddRule(rule);
 
-            return wfx;
+            return rule;
         }
 
         public IStateSetting AddStateSetting(string state)
         {
-            var stateSetting = new StateSettingSetting(state);
+            var stateSetting = new StateSetting(state);
 
-            _stateSettingsValidator.Add(stateSetting);
+            _stateSettingsValidator.AddSetting(stateSetting);
 
             return stateSetting;
         }
@@ -98,7 +100,7 @@ namespace Floomeen.Flow
             return _rulesValidator.RetrieveApplicableRule(state, command);
         }
 
-        public StateSettingSetting RetrieveSetting(string state)
+        public StateSetting RetrieveSetting(string state)
         {
             return _stateSettingsValidator.RetrieveSetting(state);
         }

@@ -1,11 +1,11 @@
 ﻿using System;
 using Floomeen.Meen;
 
-namespace Floomeen.Flow.Fluent
+namespace Floomeen.Flow.Fluent.Rules
 {
     public interface IConditional
     {
-        IIfGoto When(Func<Result, Context, bool> condition);
+        IWhenGoto When(Func<Result, Context, bool> condition);
 
         IGoTo Otherwise();
     }

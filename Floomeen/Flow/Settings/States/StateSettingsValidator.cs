@@ -2,20 +2,20 @@
 using System.Linq;
 using Floomeen.Exceptions;
 
-namespace Floomeen.Flow.Settings.State
+namespace Floomeen.Flow.Settings.States
 {
     public class StateSettingsValidator
     {
         private readonly string _machineName;
 
-        private List<StateSettingSetting> StateSettings { get; }
+        private List<StateSetting> StateSettings { get; }
 
 
         public StateSettingsValidator(string machineName)
         {
             _machineName = machineName;
 
-            StateSettings = new List<StateSettingSetting>();
+            StateSettings = new List<StateSetting>();
         }
 
         public string StartState()
@@ -38,34 +38,34 @@ namespace Floomeen.Flow.Settings.State
                 RaiseException("UndefinedStartState");
         }
 
-        private void CheckSetting(StateSettingSetting stateSettingSetting, List<string> fromStates, List<string> toStates)
+        private void CheckSetting(StateSetting stateSetting, List<string> fromStates, List<string> toStates)
         {
-            if (string.IsNullOrEmpty(stateSettingSetting.State))
+            if (string.IsNullOrEmpty(stateSetting.State))
 
                 RaiseException("InvalidState");
 
-            if (stateSettingSetting.IsStart && !fromStates.Contains(stateSettingSetting.State))
+            if (stateSetting.IsStart && !fromStates.Contains(stateSetting.State))
 
                 RaiseException("InvalidSettingStartStateNotPresentInAnyRule");
 
-            if (stateSettingSetting.IsEnd && !toStates.Contains(stateSettingSetting.State))
+            if (stateSetting.IsEnd && !toStates.Contains(stateSetting.State))
 
                 RaiseException("InvalidSettingEndStateNotPresentInAnyRule");
         }
 
-        public void Add(StateSettingSetting stateSettingSetting)
+        public void AddSetting(StateSetting stateSetting)
         {
-            StateSettings.Add(stateSettingSetting);
+            StateSettings.Add(stateSetting);
         }
 
-        public StateSettingSetting RetrieveSetting(string state)
+        public StateSetting RetrieveSetting(string state)
         {
             return StateSettings.FirstOrDefault(r => r.State == state);
         }
 
         private void RaiseException(string message)
         {
-            throw new FloomeenException($"[{_machineName}] {message}");
+            throw new FloomeenException($"[{ _machineName }] { message }");
         }
 
     }

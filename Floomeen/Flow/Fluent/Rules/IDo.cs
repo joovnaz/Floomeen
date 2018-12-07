@@ -1,7 +1,7 @@
 ﻿using System;
 using Floomeen.Meen;
 
-namespace Floomeen.Flow.Fluent
+namespace Floomeen.Flow.Fluent.Rules
 {
     public interface IDo
     {
