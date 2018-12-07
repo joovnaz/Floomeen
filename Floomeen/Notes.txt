@@ -1,6 +1,0 @@
-﻿
-Publish Nuget
-=============
-
-$ dotnet nuget push Floomeen.<version>.nupkg -k oy2cjnzqmswfwiydlixq6tfaleesn4cutncpwkim4v5odm -s https://api.nuget.org/v3/index.json
-

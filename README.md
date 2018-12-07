@@ -275,9 +275,9 @@ Finally, the `CustomerOrderFloomeen` is ready to run, after a simple setup proce
 			...
 	};
 
-	var machine = Factory CustomerOrderFloomeen();
+	var orderMeen = Factory<CustomerOrderFloomeen>.Create();
 
-	machine.Plug(customerOrder)
+	orderMeen.Plug(customerOrder)
 
 	...
 ```
@@ -290,27 +290,34 @@ This is an advanced topic covered later.
 
 ### Further Floomine Attributes
 
-Floomeen can use the following further attributes to map useful FSM properties:
+Floomeen can use the following further optional attributes to map useful properties:
 
-* `[FloomineStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details);
-* `[FloomineMachine]`: map Floomine class type full name, to make sure that each entity is uniquely linked to a specific Floomine class type (e.g. "Mynamespace.Mymachines.CustomerOrderFloomine" );
-* `[FloomineChangedOn]`: map date and time of last state change (UTC);
+* `[FloomineStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details) to extend state data;
+* `[FloomineMachine]`: map Floomine class type name, to make sure that each entity is uniquely tight to a specific Floomine (e.g. "Mynamespace.Mymachines.CustomerOrderFloomine" );
+* `[FloomineChangedOn]`: date and time of last state change (UTC);
 
 ### Delivering Our First Order
 
-Now that our Floomine is running, we can send commands as by workflow, e.g.
+Now that our Floomine is running, we can start sending commands:
 
 ```
 	...
 
-	machine.Execute(Command.Cargo);
+	orderMeen.Execute(Command.Cargo);
 
-	Console.WriteLine($"Customer Order {customerOrder.Id} is { machine.CurrentState }");
+	Console.WriteLine($"Customer Order [{customerOrder.Id}] state is '{ orderMeen.CurrentState }'");
 
-	Console.WriteLine($"Available commands: {string.Join(",", machine.AvailableCommands() )}");
+	Console.WriteLine($"Available commands: '{string.Join(",", orderMeen.AvailableCommands() )}'");
 	...
 ```
-The above code would show the message `Customer Order xxxx-xxxx is Shipping`. Naturally sending a command not defined by Floomine workflow would raise an exception.
-At any time you can query the machine to obtain a list of available commands, in our case a second message shows `Available commands: Hand`, only one command is in fact available.
+
+The above code shows a first message: `Customer Order [xxxx-xxxx] state is 'Shipping'`. 
+Naturally executing any command not declared by Floomine workflow would raise an exception.
+At any time, you can query the machine to obtain a list of available commands, 
+in our case a second message shows: `Available commands: 'Hand'`, only `Hand` command is in fact available from state `Shipping`.
+
+## More Example
+
+Find more example on 
 
 

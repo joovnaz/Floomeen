@@ -2,13 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.0.20</Version>
-    <Authors>U25</Authors>
+    <Version>0.0.21</Version>
+    <Authors>Joovnaz</Authors>
     <Description>Floomeen is a .NET Standard 2.0 Library for finite state machines development. Use a simple and powerful fluent Api for  workflows declaration, custom adapters to allow machines communicate with external entities (e.g. email gateways), coordinators for master-slave machines collaboration.</Description>
-    <Copyright>U25 2018</Copyright>
+    <Copyright>(c) U25 2018</Copyright>
     <PackageIconUrl>https://u25images.azureedge.net/public/u25.png</PackageIconUrl>
     <PackageTags>finite state machines, workflows, fluent api, gateways</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/joovnaz/Floomeen</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/joovnaz/Floomeen</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageReleaseNotes>Flomeen first open sourced.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
