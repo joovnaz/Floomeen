@@ -377,21 +377,82 @@ a class type `Func<Result, Context, bool>`.
 
             return new Result(areProductsAvailable);
         }
-
 	...
 ```
 
 The complete example is reported in folder `CustomerOrder` under `Showroom`.
+The `CustomerOrderFloomeen` class finally looks like:
+
+```
+	...
+    public class CustomerOrderFloomeen : MeenBase
+    {
+        public struct State
+        {
+            public const string New = "New";
+            public const string Shipping = "Shipping";
+            public const string Delivered = "Delivered";
+            public const string Waiting = "Waiting";
+        }
+
+        public struct Command
+        {
+            public const string Cargo = "Cargo";
+            public const string Hand = "Hand";
+        }
+
+        public CustomerOrderFloomeen()
+        {
+            Flow.AddStateSetting(State.New)
+                .IsStartState();
+
+            Flow.AddStateSetting(State.Delivered)
+                .IsEndState();
+
+            Flow.AddTransition("CargoTransition")
+                .From(State.New)
+                .On(Command.Cargo)
+                .Do(CheckProductsAvailability)
+                    .When(IsAvailable)
+                    .GoTo(State.Shipping)
+                    .Otherwise()
+                    .GoTo(State.Waiting);
+
+            Flow.AddTransition("HandTransition")
+                .From(State.Shipping)
+                .On(Command.Hand)
+                .GoTo(State.Delivered);
+        }
+
+        public Result CheckProductsAvailability(Context context)
+        {
+            var orderId = context.Fellow.Id;
+
+            var orderSystem = SelectAdapter<IOrderManagementSystem>(SupportedTypes.CustomerOrder);
+
+            var areProductsAvailable = orderSystem.CheckAvailabilityById(orderId);
+
+            return new Result(areProductsAvailable);
+        }
+
+        public bool IsAvailable(Result result, Context context)
+        {
+            return result.Success;
+        }
+    }
+	...
+```
 
 ## Context and State Data
-Depending on application requirements a machine can use additional data. 
+Depending on application requirements usually a machine need to use additional data. 
 For example a `MessagingFloomeen` might require to send a message passed by external entities 
 or store the internal numer of attempts made to send the message itself.
 Two kind of data are available: context and state data.
 
 ### Context and State Data
-A worklow use a `Context` instance to pass machine infomation along the way.
-A `Context` class is a POCO class with the following properties:
+A worklow use a `Context` class instance to pass machine infomation along the way.
+
+The `Context` POCO class owns the following properties:
 
 ```
     public class Context
@@ -400,20 +461,24 @@ A `Context` class is a POCO class with the following properties:
 
         public string PreviousState { get; set; }
 
+		// State Data
         public ContextInfo StateData { get; set; }
 
         public string Command { get; set; }
 
         public Fellow Fellow { get; set; }
 
-        public ContextInfo Data { get; set; }
+		// Context Data
+        public ContextInfo Data { get; set; } 
     }
 ```
+
 Both Data (i.e. ContextData) and StateData are two instances of `ContextInfo` class, 
 basically a dictionary of key-object pairs.
 
 The main difference between Context and State Data is persistency. 
-`StateData` is persisted (if the aliased-attribute `[FloomeenStateData]` is defined within a Fellow) over time, and is suited to store state related information.
+`StateData` is persisted (if Fellow owns an aliased-attribute `[FloomeenStateData]`) over time, 
+and is suited to store state related information.
 Context data is used by external entities, such as caller logic, to pass data to Floomeen.
 
 ## Adapters and Coordinators
