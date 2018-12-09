@@ -381,8 +381,7 @@ a class type `Func<Result, Context, bool>`.
 	...
 ```
 
-The complete code is reported in folder `CustomerOrder`.
-
+The complete example is reported in folder `CustomerOrder` under `Showroom`.
 
 ## Context and State Data
 Depending on application requirements a machine can use additional data. 
@@ -390,7 +389,7 @@ For example a `MessagingFloomeen` might require to send a message passed by exte
 or store the internal numer of attempts made to send the message itself.
 Two kind of data are available: context and state data.
 
-### Context Data
+### Context and State Data
 A worklow use a `Context` instance to pass machine infomation along the way.
 A `Context` class is a POCO class with the following properties:
 
@@ -416,9 +415,6 @@ basically a dictionary of key-object pairs.
 The main difference between Context and State Data is persistency. 
 `StateData` is persisted (if the aliased-attribute `[FloomeenStateData]` is defined within a Fellow) over time, and is suited to store state related information.
 Context data is used by external entities, such as caller logic, to pass data to Floomeen.
-
-
-### State Data
 
 ## Adapters and Coordinators
 
