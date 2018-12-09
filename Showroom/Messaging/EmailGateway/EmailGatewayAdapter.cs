@@ -1,9 +1,9 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
-namespace SimpleExample
+namespace Showroom.Messaging.EmailGateway
 {
-    public class EmailAdapter : IMessageSenderAdapter
+    public class EmailGatewayAdapter : IMessageSenderAdapter
     {
         public string[] AcceptedTypes()
         {

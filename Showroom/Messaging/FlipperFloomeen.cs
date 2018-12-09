@@ -1,6 +1,6 @@
 ﻿using Floomeen.Meen;
 
-namespace Showroom
+namespace Showroom.Messaging
 {
     public class FlipperFloomeen : MeenBase
     {

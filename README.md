@@ -291,11 +291,13 @@ This is an advanced topic covered later.
 
 ### Plugging vs Binding 
 
-When we connect the machine to state capabale POCO class (i.e. a Fellow) for the first time we use "plug" operation. 
-Plugging requires Fellow aliased-properties to be null or empty, to allow the machine to "plug" their content (e.g. start state).
+The first time we use a state-capabale POCO class (i.e. a Fellow) we use a "plug" operation. 
+Plugging requires Fellow aliased-properties to be **null or empty** (except `[FloomeenId]`), to allow the machine to "plug" Fellow content (e.g. setting start state).
 
-When we connect the machine to an existing Fellow, then we use a "bind" operation. Binding implies Flooming to check for Fellow aliased-attributes validty (e.g. state or machine if used).
-In the last case:
+To connect a machine to an existing Fellow, then we use a "bind" operation. Binding operation implies Floomeen to check for Fellow aliased-attributes validity, inb particular state and machine (if used).
+If the Fellow state is not a valid state (i.e. is neither a start nor an end state of any transition) an exception will be raised.
+
+A binding operation example:
 
 ```
 	...
@@ -311,29 +313,112 @@ In the last case:
 
 Floomeen can use the following optional attributes to map further properties:
 
-* `[FloomineStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details) to extend state data;
-* `[FloomineMachine]`: map Floomine class type name, to make sure that each entity is uniquely tight to a specific Floomine (e.g. "Mynamespace.Mymachines.CustomerOrderFloomine" );
-* `[FloomineChangedOn]`: date and time of last state change (UTC);
+* `[FloomeenStateData]`: extends state data, even if optional, is frequently used by workflows (see later for more details) to extend state data;
+* `[FloomeenMachine]`: map Floomeen class type name, to make sure that each entity is uniquely tight to a specific Floomine (e.g. `mynamespace.mymachines.CustomerOrderFloomine`);
+* `[FloomeenChangedOn]`: date and time of last state change (UTC);
 
 ### Delivering Our First Order
 
-Now that our Floomine is running, we can start sending commands:
+Now that our Floomeen is running, we can start sending commands:
 
 ```
 	...
 
-	orderMeen.Execute(Command.Cargo);
+	machine.Execute(Command.Cargo);
 
-	Console.WriteLine($"Customer Order [{customerOrder.Id}] state is '{ orderMeen.CurrentState }'");
+	Console.WriteLine($"Customer Order [{customerOrder.Id}] state is '{ machine.CurrentState }'");
 
-	Console.WriteLine($"Available commands: '{string.Join(",", orderMeen.AvailableCommands() )}'");
+	Console.WriteLine($"Available commands: '{string.Join(",", machine.AvailableCommands() )}'");
 	...
 ```
 
 The above code shows a first message: `Customer Order [xxxx-xxxx] state is 'Shipping'`. 
-Naturally executing any command not declared by Floomine workflow would raise an exception.
+Naturally executing any command not explicitely declared by Floomeen workflow would raise an exception.
 At any time, you can query the machine to obtain a list of available commands, 
 in our case a second message shows: `Available commands: 'Hand'`, only `Hand` command is in fact available from state `Shipping`.
+
+
+## More Complex Workflow
+A workflow often requires more step than simply switching machine states. In Floomeen we can extend a workflow by defining an action to execute and succesively a set of conditional checks.
+Extending our CustomerOrder example, suppose we need to check product availability before shipping the order.
+The CargoTransition could become:
+
+```
+	...
+    Flow.AddTransition("CargoTransition")
+        .From(State.New)
+        .On(Command.Cargo)
+		.Do(CheckProductsAvailabilty)
+		    .When(Available)
+            .GoTo(State.Shipping);
+		.Otherwise()
+		    .GoTo(State.Waiting);
+	...
+```
+
+In this example, an action (a `Func<>` class instance) has been introduced `CheckProductsAvailability`, 
+plus some conditional checks on state changes.
+Notice that we have introduced a new state, `Waiting`, for orders that cannot be shipped.
+The action method signature is defined in `IDo` interface, `Func<Context, Result> action`, takes a 
+`Context` as input argument and return a `Result`.
+The `Result` is then used to check against conditions, such as `Available`, 
+a class type `Func<Result, Context, bool>`.
+
+```
+	...
+
+        public Result CheckProductsAvailability(Context context)
+        {
+            var orderId = context.Fellow.Id;
+
+            var orderSystem = SelectAdapter<IOrderManagementSystem>(SupportedTypes.CustomerOrder);
+
+            var areProductsAvailable = orderSystem.CheckAvailabilityById(orderId);
+
+            return new Result(areProductsAvailable);
+        }
+
+	...
+```
+
+The complete code is reported in folder `CustomerOrder`.
+
+
+## Context and State Data
+Depending on application requirements a machine can use additional data. 
+For example a `MessagingFloomeen` might require to send a message passed by external entities 
+or store the internal numer of attempts made to send the message itself.
+Two kind of data are available: context and state data.
+
+### Context Data
+A worklow use a `Context` instance to pass machine infomation along the way.
+A `Context` class is a POCO class with the following properties:
+
+```
+    public class Context
+    {
+        public string State { get; set; }
+
+        public string PreviousState { get; set; }
+
+        public ContextInfo StateData { get; set; }
+
+        public string Command { get; set; }
+
+        public Fellow Fellow { get; set; }
+
+        public ContextInfo Data { get; set; }
+    }
+```
+Both Data (i.e. ContextData) and StateData are two instances of `ContextInfo` class, 
+basically a dictionary of key-object pairs.
+
+The main difference between Context and State Data is persistency. 
+`StateData` is persisted (if the aliased-attribute `[FloomeenStateData]` is defined within a Fellow) over time, and is suited to store state related information.
+Context data is used by external entities, such as caller logic, to pass data to Floomeen.
+
+
+### State Data
 
 ## Adapters and Coordinators
 

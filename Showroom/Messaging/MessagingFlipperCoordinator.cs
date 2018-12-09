@@ -2,7 +2,7 @@
 using Floomeen.Meen;
 using Floomeen.Meen.Events;
 
-namespace Showroom
+namespace Showroom.Messaging
 {
     public class MessagingFlipperCoordinator : CoordinatorBase<MessagingFloomeen, FlipperFloomeen>
     {

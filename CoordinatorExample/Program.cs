@@ -6,7 +6,8 @@ using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 using Floomeen.Meen.Interfaces;
 using Showroom;
-using Showroom.Adapters;
+using Showroom.Messaging;
+using Showroom.Messaging.EmailGateway;
 
 namespace CoordinatorExample
 {
@@ -85,7 +86,7 @@ namespace CoordinatorExample
         {
             floomeen = Factory<MessagingFloomeen>.Create();
 
-            floomeen.InjectAdapter<EmailAdapter>();
+            floomeen.InjectAdapter<EmailGatewayAdapter>();
 
             floomeen.AddContextData(MessagingFloomeen.ContextKey.Message, email);
 

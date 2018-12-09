@@ -1,6 +1,7 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 using Showroom;
+using Showroom.Messaging;
 
 namespace SimpleExample
 {
@@ -20,7 +21,7 @@ namespace SimpleExample
 
             //var machine = new MessagingFloomeen();
 
-            machine.InjectAdapter<EmailAdapter>();
+            machine.InjectAdapter<EmailGatewayAdapter>();
 
             machine.AddContextData(MessagingFloomeen.ContextKey.Message, message);
 

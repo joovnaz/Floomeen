@@ -1,9 +1,9 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
-namespace Showroom.Adapters
+namespace SimpleExample
 {
-    public class EmailAdapter : IMessageSenderAdapter
+    public class EmailGatewayAdapter : IMessageSenderAdapter
     {
         public string[] AcceptedTypes()
         {
@@ -25,10 +25,7 @@ namespace Showroom.Adapters
 
             System.Console.WriteLine($"==================================");
 
-            return new Result
-            {
-                Success = false
-            };
+            return new Result(false);
         }
 
         public string MessageToString(FlooMessage message)

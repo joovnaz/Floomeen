@@ -1,7 +1,7 @@
 ﻿using Floomeen.Adapters.MessageSender;
 using Floomeen.Meen;
 
-namespace Showroom
+namespace Showroom.Messaging
 {
     public class MessagingFloomeen : MeenBase
     {
@@ -88,7 +88,7 @@ namespace Showroom
             return retries;
         }
 
-        public bool Success(Result result,Context context)
+        public bool Success(Result result, Context context)
         {
             return result.Success;
         }
