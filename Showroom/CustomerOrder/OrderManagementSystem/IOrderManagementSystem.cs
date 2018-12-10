@@ -7,6 +7,6 @@ namespace Showroom.CustomerOrder.OrderManagementSystem
 {
     interface IOrderManagementSystem : IAdapter
     {
-        bool CheckAvailabilityById(object orderId);
+        bool CheckProductsAvailabilityByOrderId(object orderId);
     }
 }

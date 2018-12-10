@@ -412,30 +412,30 @@ The `CustomerOrderFloomeen` class finally looks like:
             Flow.AddTransition("CargoTransition")
                 .From(State.New)
                 .On(Command.Cargo)
-                .Do(CheckProductsAvailability)
-                    .When(IsAvailable)
-                    .GoTo(State.Shipping)
+                .Do(CheckOrderedProductsAvailability)
+                    .When(AreReadyForShipping)
+                        .GoTo(State.Shipping)
                     .Otherwise()
-                    .GoTo(State.Waiting);
+                        .GoTo(State.Waiting);
 
             Flow.AddTransition("HandTransition")
                 .From(State.Shipping)
                 .On(Command.Hand)
-                .GoTo(State.Delivered);
+                    .GoTo(State.Delivered);
         }
 
-        public Result CheckProductsAvailability(Context context)
+        public Result CheckOrderedProductsAvailability(Context context)
         {
             var orderId = context.Fellow.Id;
 
-            var orderSystem = SelectAdapter<IOrderManagementSystem>(SupportedTypes.CustomerOrder);
+            var externalOrderSystem = SelectAdapter<IOrderManagementSystem>(SupportedTypes.CustomerOrder);
 
-            var areProductsAvailable = orderSystem.CheckAvailabilityById(orderId);
+            var areProductsAvailable = externalOrderSystem.CheckProductsAvailabilityByOrderId(orderId);
 
             return new Result(areProductsAvailable);
         }
 
-        public bool IsAvailable(Result result, Context context)
+        public bool AreReadyForShipping(Result result, Context context)
         {
             return result.Success;
         }
